@@ -2,9 +2,9 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.baramnetworks.skyplayer">
+    package="org.schabi.newpipe">
 
     <application
-        android:name="org.schabi.newpipe.DebugApp"
+        android:name=".DebugApp"
         tools:replace="android:name" />
 </manifest>
