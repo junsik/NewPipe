@@ -2,6 +2,7 @@ package org.schabi.newpipe.settings.tabs;
 
 import androidx.annotation.Nullable;
 
+import com.baramnetworks.skyplayer.InitPlayList;
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
@@ -104,7 +105,7 @@ public final class TabsJsonHelper {
     }
 
     public static List<Tab> getDefaultTabs() {
-        return FALLBACK_INITIAL_TABS_LIST;
+        return InitPlayList.FALLBACK_INITIAL_TABS_LIST;
     }
 
     public static final class InvalidJsonException extends Exception {

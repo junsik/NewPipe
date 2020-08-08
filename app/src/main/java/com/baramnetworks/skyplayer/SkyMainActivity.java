@@ -48,11 +48,11 @@ public class SkyMainActivity extends MainActivity {
         mInterstitialAd.setAdUnitId("ca-app-pub-7734852415793745/3028904356");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         NavigationHelper.setInterstitialAd(mInterstitialAd);
-
-        NavigationHelper.openPlaylistFragment(getSupportFragmentManager(),
-                0,
-                "https://www.youtube.com/playlist?list=PL2HEDIx6Li8jGsqCiXUq9fzCqpH99qqHV",
-                "멜론 TOP100");
+//
+//        NavigationHelper.openPlaylistFragment(getSupportFragmentManager(),
+//                0,
+//                "https://www.youtube.com/playlist?list=PL2HEDIx6Li8jGsqCiXUq9fzCqpH99qqHV",
+//                "멜론 TOP100");
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()

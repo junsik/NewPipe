@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.schabi.newpipe">
+    package="com.baramnetworks.skyplayer">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -15,7 +15,7 @@
         android:required="false" />
 
     <application
-        android:name=".App"
+        android:name="org.schabi.newpipe.App"
         android:allowBackup="true"
         android:banner="@mipmap/newpipe_tv_banner"
         android:icon="@mipmap/ic_launcher"
@@ -47,7 +47,7 @@
         </receiver>
 
         <service
-                android:name=".player.MainPlayer"
+                android:name="org.schabi.newpipe.player.MainPlayer"
                 android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
@@ -55,24 +55,24 @@
         </service>
 
         <activity
-            android:name=".player.BackgroundPlayerActivity"
+            android:name="org.schabi.newpipe.player.BackgroundPlayerActivity"
             android:label="@string/title_activity_play_queue"
             android:launchMode="singleTask" />
 
         <activity
-            android:name=".settings.SettingsActivity"
+            android:name="org.schabi.newpipe.settings.SettingsActivity"
             android:label="@string/settings" />
 
         <activity
-            android:name=".about.AboutActivity"
+            android:name="org.schabi.newpipe.about.AboutActivity"
             android:label="@string/title_activity_about" />
 
-        <service android:name=".local.subscription.services.SubscriptionsImportService" />
-        <service android:name=".local.subscription.services.SubscriptionsExportService" />
-        <service android:name=".local.feed.service.FeedLoadService" />
+        <service android:name="org.schabi.newpipe.local.subscription.services.SubscriptionsImportService" />
+        <service android:name="org.schabi.newpipe.local.subscription.services.SubscriptionsExportService" />
+        <service android:name="org.schabi.newpipe.local.feed.service.FeedLoadService" />
 
         <activity
-            android:name=".PanicResponderActivity"
+            android:name="org.schabi.newpipe.PanicResponderActivity"
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:theme="@android:style/Theme.NoDisplay">
@@ -84,21 +84,21 @@
         </activity>
 
         <activity
-            android:name=".ExitActivity"
+            android:name="org.schabi.newpipe.ExitActivity"
             android:label="@string/general_error"
             android:theme="@android:style/Theme.NoDisplay" />
-        <activity android:name=".report.ErrorActivity" />
+        <activity android:name="org.schabi.newpipe.report.ErrorActivity" />
 
         <!-- giga get related -->
         <activity
-            android:name=".download.DownloadActivity"
+            android:name="org.schabi.newpipe.download.DownloadActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask" />
 
         <service android:name="us.shandian.giga.service.DownloadManagerService" />
 
         <activity
-            android:name=".util.FilePickerActivityHelper"
+            android:name="org.schabi.newpipe.util.FilePickerActivityHelper"
             android:label="@string/app_name"
             android:theme="@style/FilePickerThemeDark">
             <intent-filter>
@@ -108,7 +108,7 @@
         </activity>
 
         <activity
-            android:name=".ReCaptchaActivity"
+            android:name="org.schabi.newpipe.ReCaptchaActivity"
             android:label="@string/recaptcha" />
 
         <provider
@@ -122,7 +122,7 @@
         </provider>
 
         <activity
-            android:name=".RouterActivity"
+            android:name="org.schabi.newpipe.RouterActivity"
             android:excludeFromRecents="true"
             android:label="@string/preferred_open_action_share_menu_title"
             android:taskAffinity=""
@@ -320,7 +320,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name=".RouterActivity$FetcherService"
+            android:name="org.schabi.newpipe.RouterActivity$FetcherService"
             android:exported="false" />
     </application>
 </manifest>

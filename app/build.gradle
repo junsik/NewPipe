@@ -14,7 +14,7 @@ android {
         resValue "string", "app_name", "SkyPlayer"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 1000
+        versionCode 2020080810
         versionName "1.19.8"
         multiDexEnabled true
 
