@@ -665,4 +665,7 @@
     <string name="channel_created_by">Created by %s</string>
     <string name="video_detail_by">By %s</string>
     <string name="playlist_page_summary">Playlist page</string>
+    <string name="youAreNotUpdatedTitle">Update Available</string>
+    <string name="youAreNotUpdatedMessage">A new version of SkyPlayer is available. Please update to version</string>
+    <string name="update">Update</string>
 </resources>

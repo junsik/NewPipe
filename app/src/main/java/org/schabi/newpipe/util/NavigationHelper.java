@@ -19,6 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.InterstitialAd;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.schabi.newpipe.MainActivity;
@@ -61,6 +63,7 @@ import java.util.ArrayList;
 public final class NavigationHelper {
     public static final String MAIN_FRAGMENT_TAG = "main_fragment_tag";
     public static final String SEARCH_FRAGMENT_TAG = "search_fragment_tag";
+    private static InterstitialAd mInterstitialAd;
 
     private NavigationHelper() { }
 
@@ -177,14 +180,27 @@ public final class NavigationHelper {
         startService(context, intent);
     }
 
+    public static void setInterstitialAd(final InterstitialAd ad) {
+        mInterstitialAd = ad;
+    }
+
     public static void playOnBackgroundPlayer(final Context context,
                                               final PlayQueue queue,
                                               final boolean resumePlayback) {
-        Toast.makeText(context, R.string.background_player_playing_toast, Toast.LENGTH_SHORT)
-                .show();
-        final Intent intent = getPlayerIntent(context, MainPlayer.class, queue, resumePlayback);
-        intent.putExtra(VideoPlayer.PLAYER_TYPE, VideoPlayer.PLAYER_TYPE_AUDIO);
-        startService(context, intent);
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        }
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                Toast.makeText(context, R.string.background_player_playing_toast,
+                        Toast.LENGTH_SHORT).show();
+                final Intent intent = getPlayerIntent(context, MainPlayer.class, queue,
+                        resumePlayback);
+                intent.putExtra(VideoPlayer.PLAYER_TYPE, VideoPlayer.PLAYER_TYPE_AUDIO);
+                startService(context, intent);
+            }
+        });
     }
 
     public static void enqueueOnPopupPlayer(final Context context, final PlayQueue queue,

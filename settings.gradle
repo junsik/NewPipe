@@ -1,1 +1,6 @@
 include ':app'
+includeBuild('../NewPipeExtractor') {
+    dependencySubstitution {
+        substitute module('com.github.TeamNewPipe:NewPipeExtractor') with project(':extractor')
+    }
+}

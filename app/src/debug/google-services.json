@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "858972645763",
+    "firebase_url": "https://skyplayer-4270b.firebaseio.com",
+    "project_id": "skyplayer-4270b",
+    "storage_bucket": "skyplayer-4270b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:858972645763:android:f3500548f860d1018ceeb6",
+        "android_client_info": {
+          "package_name": "com.baramnetworks.skyplayer.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "858972645763-3figllid20pmi2scqkvip7sfq5kg5ti5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATvkzNA_arivG0mv69RkiVDT9o0bS6f1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "858972645763-3figllid20pmi2scqkvip7sfq5kg5ti5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

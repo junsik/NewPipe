@@ -525,4 +525,7 @@
     <string name="clear_download_history">다운로드 기록 삭제</string>
     <string name="delete_downloaded_files">다운로드된 파일 삭제</string>
     <string name="deleted_downloads">%1$d 다운로드 삭제</string>
+    <string name="youAreNotUpdatedTitle">업데이트 알림</string>
+    <string name="youAreNotUpdatedMessage">새 버전의 스카이플레이어가 있습니다. 업데이트 해주세요.</string>
+    <string name="update">Update</string>
 </resources>
