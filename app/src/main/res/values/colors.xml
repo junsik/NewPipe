@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#CD201F</color>
+    <color name="ic_launcher_background">#4267B2</color>
 
     <!-- Light Theme -->
     <color name="light_background_color">#EEEEEE</color>

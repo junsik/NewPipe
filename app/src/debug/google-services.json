@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:858972645763:android:f3500548f860d1018ceeb6",
+        "mobilesdk_app_id": "1:858972645763:android:bd8cec34500516468ceeb6",
         "android_client_info": {
-          "package_name": "com.baramnetworks.skyplayer.debug"
+          "package_name": "com.baramnetworks.skyplayerapp.debug"
         }
       },
       "oauth_client": [
@@ -21,7 +21,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyATvkzNA_arivG0mv69RkiVDT9o0bS6f1I"
+          "current_key": "AIzaSyCWOfdGVEEg_jbsmGPfWt1sc2rDaaTV07Q"
         }
       ],
       "services": {
@@ -33,7 +33,8 @@
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-7734852415793745~7955951495"
     }
   ],
   "configuration_version": "1"

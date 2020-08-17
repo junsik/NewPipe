@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.InterstitialAd;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -190,17 +189,12 @@ public final class NavigationHelper {
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
         }
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                Toast.makeText(context, R.string.background_player_playing_toast,
-                        Toast.LENGTH_SHORT).show();
-                final Intent intent = getPlayerIntent(context, MainPlayer.class, queue,
-                        resumePlayback);
-                intent.putExtra(VideoPlayer.PLAYER_TYPE, VideoPlayer.PLAYER_TYPE_AUDIO);
-                startService(context, intent);
-            }
-        });
+        Toast.makeText(context, R.string.background_player_playing_toast,
+                Toast.LENGTH_SHORT).show();
+        final Intent intent = getPlayerIntent(context, MainPlayer.class, queue,
+                resumePlayback);
+        intent.putExtra(VideoPlayer.PLAYER_TYPE, VideoPlayer.PLAYER_TYPE_AUDIO);
+        startService(context, intent);
     }
 
     public static void enqueueOnPopupPlayer(final Context context, final PlayQueue queue,

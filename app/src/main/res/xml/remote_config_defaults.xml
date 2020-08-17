@@ -2,7 +2,11 @@
 <!-- START xml_defaults -->
 <defaultsMap>
     <entry>
-        <key>skyplayer_version</key>
-        <value>953</value>
+        <key>version_code</key>
+        <value>0</value>
+    </entry>
+    <entry>
+        <key>version_name</key>
+        <value>""</value>
     </entry>
 </defaultsMap>
