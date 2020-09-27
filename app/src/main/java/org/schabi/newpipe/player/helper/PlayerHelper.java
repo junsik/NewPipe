@@ -2,8 +2,7 @@ package org.schabi.newpipe.player.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.accessibility.CaptioningManager;
 
@@ -29,6 +28,7 @@ import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.player.playqueue.PlayQueue;
 import org.schabi.newpipe.player.playqueue.PlayQueueItem;
 import org.schabi.newpipe.player.playqueue.SinglePlayQueue;
+import org.schabi.newpipe.util.ListHelper;
 
 import java.lang.annotation.Retention;
 import java.text.DecimalFormat;
@@ -249,6 +249,18 @@ public final class PlayerHelper {
         }
     }
 
+    public static boolean isAutoplayAllowedByUser(@NonNull final Context context) {
+        switch (PlayerHelper.getAutoplayType(context)) {
+            case PlayerHelper.AutoplayType.AUTOPLAY_TYPE_NEVER:
+                return false;
+            case PlayerHelper.AutoplayType.AUTOPLAY_TYPE_WIFI:
+                return !ListHelper.isMeteredNetwork(context);
+            case PlayerHelper.AutoplayType.AUTOPLAY_TYPE_ALWAYS:
+            default:
+                return true;
+        }
+    }
+
     @NonNull
     public static SeekParameters getSeekParameters(@NonNull final Context context) {
         return isUsingInexactSeek(context) ? SeekParameters.CLOSEST_SYNC : SeekParameters.EXACT;
@@ -303,10 +315,6 @@ public final class PlayerHelper {
 
     @NonNull
     public static CaptionStyleCompat getCaptionStyle(@NonNull final Context context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            return CaptionStyleCompat.DEFAULT;
-        }
-
         final CaptioningManager captioningManager = (CaptioningManager)
                 context.getSystemService(Context.CAPTIONING_SERVICE);
         if (captioningManager == null || !captioningManager.isEnabled()) {
@@ -331,10 +339,6 @@ public final class PlayerHelper {
      * @return caption scaling
      */
     public static float getCaptionScale(@NonNull final Context context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            return 1f;
-        }
-
         final CaptioningManager captioningManager
                 = (CaptioningManager) context.getSystemService(Context.CAPTIONING_SERVICE);
         if (captioningManager == null || !captioningManager.isEnabled()) {

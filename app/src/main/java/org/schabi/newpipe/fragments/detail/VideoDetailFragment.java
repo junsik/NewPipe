@@ -16,9 +16,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
+import androidx.core.text.HtmlCompat;
+import androidx.preference.PreferenceManager;
 import android.provider.Settings;
-import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.util.Linkify;
@@ -202,6 +202,7 @@ public class VideoDetailFragment
     private ImageView thumbnailImageView;
     private ImageView thumbnailPlayButton;
     private AnimatedProgressBar positionView;
+    private ViewGroup playerPlaceholder;
 
     private View videoTitleRoot;
     private TextView videoTitleTextView;
@@ -243,7 +244,7 @@ public class VideoDetailFragment
 
     private AppBarLayout appBarLayout;
     private ViewPager viewPager;
-    private TabAdaptor pageAdapter;
+    private TabAdapter pageAdapter;
     private TabLayout tabLayout;
     private FrameLayout relatedStreamsLayout;
 
@@ -336,6 +337,7 @@ public class VideoDetailFragment
             stopPlayerListener();
             playerService = null;
             player = null;
+            saveCurrentAndRestoreDefaultBrightness();
         }
     }
 
@@ -424,8 +426,8 @@ public class VideoDetailFragment
         if (currentWorker != null) {
             currentWorker.dispose();
         }
-        setupBrightness(true);
-        PreferenceManager.getDefaultSharedPreferences(getContext())
+        saveCurrentAndRestoreDefaultBrightness();
+        PreferenceManager.getDefaultSharedPreferences(requireContext())
                 .edit()
                 .putString(getString(R.string.stream_info_selected_tab_key),
                         pageAdapter.getItemTitle(viewPager.getCurrentItem()))
@@ -438,7 +440,7 @@ public class VideoDetailFragment
 
         activity.sendBroadcast(new Intent(ACTION_VIDEO_FRAGMENT_RESUMED));
 
-        setupBrightness(false);
+        setupBrightness();
 
         if (updateFlags != 0) {
             if (!isLoading.get() && currentInfo != null) {
@@ -551,7 +553,6 @@ public class VideoDetailFragment
 
         Serializable serializable = savedState.getSerializable(INFO_KEY);
         if (serializable instanceof StreamInfo) {
-            //noinspection unchecked
             currentInfo = (StreamInfo) serializable;
             InfoCache.getInstance().putInfo(serviceId, url, currentInfo, InfoItem.InfoType.STREAM);
         }
@@ -671,7 +672,8 @@ public class VideoDetailFragment
                 }
                 break;
             case R.id.detail_title_root_layout:
-                ShareUtils.copyToClipboard(getContext(), videoTitleTextView.getText().toString());
+                ShareUtils.copyToClipboard(requireContext(),
+                        videoTitleTextView.getText().toString());
                 break;
         }
 
@@ -705,6 +707,7 @@ public class VideoDetailFragment
         thumbnailBackgroundButton = rootView.findViewById(R.id.detail_thumbnail_root_layout);
         thumbnailImageView = rootView.findViewById(R.id.detail_thumbnail_image_view);
         thumbnailPlayButton = rootView.findViewById(R.id.detail_thumbnail_play_button);
+        playerPlaceholder = rootView.findViewById(R.id.player_placeholder);
 
         contentRootLayoutHiding = rootView.findViewById(R.id.detail_content_root_hiding);
 
@@ -749,7 +752,7 @@ public class VideoDetailFragment
 
         appBarLayout = rootView.findViewById(R.id.appbarlayout);
         viewPager = rootView.findViewById(R.id.viewpager);
-        pageAdapter = new TabAdaptor(getChildFragmentManager());
+        pageAdapter = new TabAdapter(getChildFragmentManager());
         viewPager.setAdapter(pageAdapter);
         tabLayout = rootView.findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
@@ -955,6 +958,9 @@ public class VideoDetailFragment
             return;
         }
         setInitialData(sid, videoUrl, title, queue);
+        if (player != null) {
+            player.disablePreloadingOfCurrentTrack();
+        }
         startLoading(false, true);
     }
 
@@ -1103,7 +1109,7 @@ public class VideoDetailFragment
             player.toggleFullscreen();
         }
 
-        if (!useExternalAudioPlayer && android.os.Build.VERSION.SDK_INT >= 16) {
+        if (!useExternalAudioPlayer) {
             openNormalBackgroundPlayer(append);
         } else {
             startOnExternalPlayer(activity, currentInfo, audioStream);
@@ -1230,7 +1236,7 @@ public class VideoDetailFragment
     }
 
     private boolean isExternalPlayerEnabled() {
-        return PreferenceManager.getDefaultSharedPreferences(getContext())
+        return PreferenceManager.getDefaultSharedPreferences(requireContext())
                 .getBoolean(getString(R.string.use_external_video_player_key), false);
     }
 
@@ -1241,23 +1247,7 @@ public class VideoDetailFragment
                 && !isExternalPlayerEnabled()
                 && (player == null || player.videoPlayerSelected())
                 && bottomSheetState != BottomSheetBehavior.STATE_HIDDEN
-                && isAutoplayAllowedByUser();
-    }
-
-    private boolean isAutoplayAllowedByUser() {
-        if (activity == null) {
-            return false;
-        }
-
-        switch (PlayerHelper.getAutoplayType(activity)) {
-            case PlayerHelper.AutoplayType.AUTOPLAY_TYPE_NEVER:
-                return false;
-            case PlayerHelper.AutoplayType.AUTOPLAY_TYPE_WIFI:
-                return !ListHelper.isMeteredNetwork(activity);
-            case PlayerHelper.AutoplayType.AUTOPLAY_TYPE_ALWAYS:
-            default:
-                return true;
-        }
+                && PlayerHelper.isAutoplayAllowedByUser(requireContext());
     }
 
     private void addVideoPlayerView() {
@@ -1265,17 +1255,15 @@ public class VideoDetailFragment
             return;
         }
 
-        final FrameLayout viewHolder = getView().findViewById(R.id.player_placeholder);
-
         // Check if viewHolder already contains a child
-        if (player.getRootView().getParent() != viewHolder) {
+        if (player.getRootView().getParent() != playerPlaceholder) {
             removeVideoPlayerView();
         }
         setHeightThumbnail();
 
         // Prevent from re-adding a view multiple times
         if (player.getRootView().getParent() == null) {
-            viewHolder.addView(player.getRootView());
+            playerPlaceholder.addView(player.getRootView());
         }
     }
 
@@ -1290,9 +1278,8 @@ public class VideoDetailFragment
             return;
         }
 
-        final FrameLayout viewHolder = getView().findViewById(R.id.player_placeholder);
-        viewHolder.getLayoutParams().height = FrameLayout.LayoutParams.MATCH_PARENT;
-        viewHolder.requestLayout();
+        playerPlaceholder.getLayoutParams().height = FrameLayout.LayoutParams.MATCH_PARENT;
+        playerPlaceholder.requestLayout();
     }
 
     private void prepareDescription(final Description description) {
@@ -1303,24 +1290,17 @@ public class VideoDetailFragment
 
         if (description.getType() == Description.HTML) {
             disposables.add(Single.just(description.getContent())
-                    .map((@NonNull String descriptionText) -> {
-                        final Spanned parsedDescription;
-                        if (Build.VERSION.SDK_INT >= 24) {
-                            parsedDescription = Html.fromHtml(descriptionText, 0);
-                        } else {
-                            //noinspection deprecation
-                            parsedDescription = Html.fromHtml(descriptionText);
-                        }
-                        return parsedDescription;
-                    })
+                    .map((@NonNull final String descriptionText) ->
+                            HtmlCompat.fromHtml(descriptionText,
+                                    HtmlCompat.FROM_HTML_MODE_LEGACY))
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe((@NonNull Spanned spanned) -> {
+                    .subscribe((@NonNull final Spanned spanned) -> {
                         videoDescriptionView.setText(spanned);
                         videoDescriptionView.setVisibility(View.VISIBLE);
                     }));
         } else if (description.getType() == Description.MARKDOWN) {
-            final Markwon markwon = Markwon.builder(getContext())
+            final Markwon markwon = Markwon.builder(requireContext())
                     .usePlugin(LinkifyPlugin.create())
                     .build();
             markwon.setMarkdown(videoDescriptionView, description.getContent());
@@ -1770,9 +1750,19 @@ public class VideoDetailFragment
     private void showPlaybackProgress(final long progress, final long duration) {
         final int progressSeconds = (int) TimeUnit.MILLISECONDS.toSeconds(progress);
         final int durationSeconds = (int) TimeUnit.MILLISECONDS.toSeconds(duration);
+        // If the old and the new progress values have a big difference then use
+        // animation. Otherwise don't because it affects CPU
+        final boolean shouldAnimate = Math.abs(positionView.getProgress() - progressSeconds) > 2;
         positionView.setMax(durationSeconds);
-        positionView.setProgressAnimated(progressSeconds);
-        detailPositionView.setText(Localization.getDurationString(progressSeconds));
+        if (shouldAnimate) {
+            positionView.setProgressAnimated(progressSeconds);
+        } else {
+            positionView.setProgress(progressSeconds);
+        }
+        final String position = Localization.getDurationString(progressSeconds);
+        if (position != detailPositionView.getText()) {
+            detailPositionView.setText(position);
+        }
         if (positionView.getVisibility() != View.VISIBLE) {
             animateView(positionView, true, 100);
             animateView(detailPositionView, true, 100);
@@ -1899,6 +1889,7 @@ public class VideoDetailFragment
 
     @Override
     public void onFullscreenStateChanged(final boolean fullscreen) {
+        setupBrightness();
         if (playerService.getView() == null || player.getParentActivity() == null) {
             return;
         }
@@ -1949,7 +1940,7 @@ public class VideoDetailFragment
                 (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
         final AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
         final ValueAnimator valueAnimator = ValueAnimator
-                .ofInt(0, -getView().findViewById(R.id.player_placeholder).getHeight());
+                .ofInt(0, -playerPlaceholder.getHeight());
         valueAnimator.setInterpolator(new DecelerateInterpolator());
         valueAnimator.addUpdateListener(animation -> {
             behavior.setTopAndBottomOffset((int) animation.getAnimatedValue());
@@ -1973,6 +1964,11 @@ public class VideoDetailFragment
             return;
         }
 
+        // Prevent jumping of the player on devices with cutout
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            activity.getWindow().getAttributes().layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT;
+        }
         activity.getWindow().getDecorView().setSystemUiVisibility(0);
         activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
     }
@@ -1986,6 +1982,11 @@ public class VideoDetailFragment
             return;
         }
 
+        // Prevent jumping of the player on devices with cutout
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            activity.getWindow().getAttributes().layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER;
+        }
         final int visibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -2013,29 +2014,41 @@ public class VideoDetailFragment
                 && player.getPlayer().getPlaybackState() != Player.STATE_IDLE;
     }
 
-    private void setupBrightness(final boolean save) {
+    private void saveCurrentAndRestoreDefaultBrightness() {
+        final WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
+        if (lp.screenBrightness == -1) {
+            return;
+        }
+        // Save current brightness level
+        PlayerHelper.setScreenBrightness(activity, lp.screenBrightness);
+
+        // Restore the old  brightness when fragment.onPause() called or
+        // when a player is in portrait
+        lp.screenBrightness = -1;
+        activity.getWindow().setAttributes(lp);
+    }
+
+    private void setupBrightness() {
         if (activity == null) {
             return;
         }
 
         final WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
-        if (save) {
-            // Save current brightness level
-            PlayerHelper.setScreenBrightness(activity, lp.screenBrightness);
-
-            // Restore the old  brightness when fragment.onPause() called.
-            // It means when user leaves this fragment brightness will be set to system brightness
-            lp.screenBrightness = -1;
+        if (player == null
+                || !player.videoPlayerSelected()
+                || !player.isFullscreen()
+                || bottomSheetState != BottomSheetBehavior.STATE_EXPANDED) {
+            // Apply system brightness when the player is not in fullscreen
+            saveCurrentAndRestoreDefaultBrightness();
         } else {
             // Restore already saved brightness level
             final float brightnessLevel = PlayerHelper.getScreenBrightness(activity);
-            if (brightnessLevel <= 0.0f && brightnessLevel > 1.0f) {
+            if (brightnessLevel == lp.screenBrightness) {
                 return;
             }
-
             lp.screenBrightness = brightnessLevel;
+            activity.getWindow().setAttributes(lp);
         }
-        activity.getWindow().setAttributes(lp);
     }
 
     private void checkLandscape() {
@@ -2158,6 +2171,7 @@ public class VideoDetailFragment
      * @param toMain if true than the main fragment will be focused or the player otherwise
      */
     private void moveFocusToMainFragment(final boolean toMain) {
+        setupBrightness();
         final ViewGroup mainFragment = requireActivity().findViewById(R.id.fragment_holder);
         // Hamburger button steels a focus even under bottomSheet
         final Toolbar toolbar = requireActivity().findViewById(R.id.toolbar);
@@ -2181,7 +2195,7 @@ public class VideoDetailFragment
      * Bottom padding should be equal to the mini player's height in this case
      *
      * @param showMore whether main fragment should be expanded or not
-     * */
+     */
     private void manageSpaceAtTheBottom(final boolean showMore) {
         final int peekHeight = getResources().getDimensionPixelSize(R.dimen.mini_player_height);
         final ViewGroup holder = requireActivity().findViewById(R.id.fragment_holder);

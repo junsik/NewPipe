@@ -27,7 +27,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -54,8 +54,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-import org.schabi.newpipe.BuildConfig;
 import org.schabi.newpipe.DownloaderImpl;
+import org.schabi.newpipe.MainActivity;
 import org.schabi.newpipe.R;
 import org.schabi.newpipe.extractor.stream.StreamInfo;
 import org.schabi.newpipe.local.history.HistoryRecordManager;
@@ -98,7 +98,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 @SuppressWarnings({"WeakerAccess"})
 public abstract class BasePlayer implements
         Player.EventListener, PlaybackListener, ImageLoadingListener {
-    public static final boolean DEBUG = !BuildConfig.BUILD_TYPE.equals("release");
+    public static final boolean DEBUG = MainActivity.DEBUG;
     @NonNull
     public static final String TAG = "BasePlayer";
 
@@ -180,6 +180,8 @@ public abstract class BasePlayer implements
     @NonNull
     protected final HistoryRecordManager recordManager;
     @NonNull
+    protected final SharedPreferences sharedPreferences;
+    @NonNull
     protected final CustomTrackSelector trackSelector;
     @NonNull
     protected final PlayerDataSource dataSource;
@@ -211,6 +213,7 @@ public abstract class BasePlayer implements
         setupBroadcastReceiver(intentFilter);
 
         this.recordManager = new HistoryRecordManager(context);
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         this.progressUpdateReactor = new SerialDisposable();
         this.databaseUpdateReactor = new CompositeDisposable();
@@ -880,7 +883,6 @@ public abstract class BasePlayer implements
         }
         setRecovery();
 
-        final Throwable cause = error.getCause();
         if (error instanceof BehindLiveWindowException) {
             reload();
         } else {
@@ -1240,7 +1242,15 @@ public abstract class BasePlayer implements
             Log.d(TAG, "seekBy() called with: position = [" + positionMillis + "]");
         }
         if (simpleExoPlayer != null) {
-            simpleExoPlayer.seekTo(positionMillis);
+            // prevent invalid positions when fast-forwarding/-rewinding
+            long normalizedPositionMillis = positionMillis;
+            if (normalizedPositionMillis < 0) {
+                normalizedPositionMillis = 0;
+            } else if (normalizedPositionMillis > simpleExoPlayer.getDuration()) {
+                normalizedPositionMillis = simpleExoPlayer.getDuration();
+            }
+
+            simpleExoPlayer.seekTo(normalizedPositionMillis);
         }
     }
 
@@ -1340,6 +1350,11 @@ public abstract class BasePlayer implements
             return;
         }
         final StreamInfo currentInfo = currentMetadata.getMetadata();
+        if (playQueue != null) {
+            // Save current position. It will help to restore this position once a user
+            // wants to play prev or next stream from the queue
+            playQueue.setRecovery(playQueue.getIndex(), simpleExoPlayer.getContentPosition());
+        }
         savePlaybackState(currentInfo, simpleExoPlayer.getCurrentPosition());
     }
 
@@ -1404,6 +1419,11 @@ public abstract class BasePlayer implements
     @Nullable
     public MediaSourceTag getCurrentMetadata() {
         return currentMetadata;
+    }
+
+    @NonNull
+    public LoadController getLoadController() {
+        return (LoadController) loadControl;
     }
 
     @NonNull

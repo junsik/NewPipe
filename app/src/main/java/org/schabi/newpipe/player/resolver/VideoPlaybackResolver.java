@@ -106,7 +106,7 @@ public class VideoPlaybackResolver implements PlaybackResolver {
                         SELECTION_FLAG_AUTOSELECT,
                         PlayerHelper.captionLanguageOf(context, subtitle));
                 final MediaSource textSource = dataSource.getSampleMediaSourceFactory()
-                        .createMediaSource(Uri.parse(subtitle.getURL()), textFormat, TIME_UNSET);
+                        .createMediaSource(Uri.parse(subtitle.getUrl()), textFormat, TIME_UNSET);
                 mediaSources.add(textSource);
             }
         }
@@ -115,7 +115,7 @@ public class VideoPlaybackResolver implements PlaybackResolver {
             return mediaSources.get(0);
         } else {
             return new MergingMediaSource(mediaSources.toArray(
-                    new MediaSource[mediaSources.size()]));
+                    new MediaSource[0]));
         }
     }
 
