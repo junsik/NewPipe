@@ -57,7 +57,6 @@ public final class NewPipeSettings {
 
         PreferenceManager.setDefaultValues(context, R.xml.appearance_settings, true);
         PreferenceManager.setDefaultValues(context, R.xml.content_settings, true);
-        PreferenceManager.setDefaultValues(context, R.xml.download_settings, true);
         PreferenceManager.setDefaultValues(context, R.xml.history_settings, true);
         PreferenceManager.setDefaultValues(context, R.xml.main_settings, true);
         PreferenceManager.setDefaultValues(context, R.xml.video_audio_settings, true);

@@ -38,25 +38,6 @@
         android:key="@string/main_page_content_key"
         android:title="@string/main_page_content"/>
 
-    <PreferenceScreen
-        app:iconSpaceReserved="false"
-        android:fragment="org.schabi.newpipe.settings.PeertubeInstanceListFragment"
-        android:key="@string/peertube_instance_setup_key"
-        android:title="@string/peertube_instance_url_title"
-        android:summary="@string/peertube_instance_url_summary"/>
-
-    <SwitchPreferenceCompat
-        app:iconSpaceReserved="false"
-        android:defaultValue="false"
-        android:key="@string/show_age_restricted_content"
-        android:title="@string/show_age_restricted_content_title"/>
-
-    <SwitchPreferenceCompat
-        app:iconSpaceReserved="false"
-        android:defaultValue="false"
-        android:key="@string/youtube_restricted_mode_enabled"
-        android:title="@string/youtube_restricted_mode_enabled_title"/>
-
     <SwitchPreferenceCompat
         app:iconSpaceReserved="false"
         android:defaultValue="true"
