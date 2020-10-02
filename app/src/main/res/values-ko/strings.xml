@@ -524,11 +524,9 @@
     <string name="clear_download_history">다운로드 기록 삭제</string>
     <string name="delete_downloaded_files">다운로드된 파일 삭제</string>
     <string name="deleted_downloads">%1$d 다운로드 삭제</string>
-<<<<<<< HEAD
     <string name="youAreNotUpdatedTitle">업데이트 알림</string>
     <string name="youAreNotUpdatedMessage">새 버전의 스카이플레이어가 있습니다. 업데이트 해주세요.</string>
     <string name="update">Update</string>
-=======
     <plurals name="feed_group_dialog_selection_count">
         <item quantity="other">%d 선택</item>
     </plurals>
@@ -556,5 +554,4 @@
     <string name="artists">아티스트</string>
     <string name="albums">앨범</string>
     <string name="videos_string">비디오</string>
->>>>>>> a9fafe91a5b1e9a68120b4cf01559171de2630a0
 </resources>

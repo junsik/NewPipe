@@ -20,21 +20,8 @@
                 android:id="@+id/fragment_holder"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/adView"
                 android:layout_marginTop="?attr/actionBarSize" />
 
-
-            <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/adView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="bottom"
-                ads:adSize="SMART_BANNER"
-                ads:adUnitId="ca-app-pub-7734852415793745/6271458444"
-                app:behavior_hideable="true"
-                app:behavior_peekHeight="0dp" />
         </RelativeLayout>
 
         <FrameLayout

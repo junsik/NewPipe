@@ -13,11 +13,6 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -29,60 +24,26 @@ import org.schabi.newpipe.MainActivity;
 import org.schabi.newpipe.NewPipeDatabase;
 import org.schabi.newpipe.R;
 import org.schabi.newpipe.database.AppDatabase;
-import org.schabi.newpipe.util.NavigationHelper;
 
 public class SkyMainActivity extends MainActivity {
-    private AdView mAdView;
+
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private FirebaseAnalytics mFirebaseAnalytics;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mAdView != null) {
-            mAdView.resume();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        AppDatabase db = NewPipeDatabase.getInstance(this);
-        InitPlayList pl = new InitPlayList(db);
+        final AppDatabase db = NewPipeDatabase.getInstance(this);
+        final InitPlayList pl = new InitPlayList(db);
         pl.execute();
-
-        MobileAds.initialize(this);
-
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
-        InterstitialAd mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-7734852415793745/6131749849");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        NavigationHelper.setInterstitialAd(mInterstitialAd);
-
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
-        });
 
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+        final FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings
+                .Builder()
                 .setMinimumFetchIntervalInSeconds(60 * 10)
                 .build();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
@@ -93,11 +54,11 @@ public class SkyMainActivity extends MainActivity {
                     @Override
                     public void onComplete(@NonNull final Task<Boolean> task) {
                         if (task.isSuccessful()) {
-                            long newversion =
+                            final long newversion =
                                     mFirebaseRemoteConfig.getLong("version_code");
-                            String versionName =
+                            final String versionName =
                                     mFirebaseRemoteConfig.getString("version_name");
-                            String apkLocationUrl =
+                            final String apkLocationUrl =
                                     mFirebaseRemoteConfig.getString("apkLocationUrl");
 
                             compareAppVersionAndShowNotification(versionName,
@@ -113,7 +74,7 @@ public class SkyMainActivity extends MainActivity {
     }
 
     public void showUpdatePopup() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 new ContextThemeWrapper(this,
                 R.style.DarkDialogTheme));
 
@@ -142,7 +103,7 @@ public class SkyMainActivity extends MainActivity {
     private void compareAppVersionAndShowNotification(final String versionName,
                                                       final String apkLocationUrl,
                                                       final long versionCode) {
-        int notificationId = 2000;
+        final int notificationId = 2000;
 
         if (BuildConfig.VERSION_CODE < versionCode) {
             showUpdatePopup();
