@@ -241,9 +241,6 @@ public class PlaylistFragment extends BaseListInfoFragment<PlaylistInfo> {
             case R.id.action_settings:
                 NavigationHelper.openSettings(requireContext());
                 break;
-            case R.id.menu_item_openInBrowser:
-                ShareUtils.openUrlInBrowser(requireContext(), url);
-                break;
             case R.id.menu_item_bookmark:
                 onBookmarkClicked();
                 break;

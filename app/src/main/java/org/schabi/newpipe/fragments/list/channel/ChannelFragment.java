@@ -220,11 +220,6 @@ public class ChannelFragment extends BaseListInfoFragment<ChannelInfo>
             case R.id.menu_item_rss:
                 openRssFeed();
                 break;
-            case R.id.menu_item_openInBrowser:
-                if (currentInfo != null) {
-                    ShareUtils.openUrlInBrowser(requireContext(), currentInfo.getOriginalUrl());
-                }
-                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
