@@ -13,12 +13,6 @@
         tools:visible="true"/>
 
     <item
-        android:id="@+id/menu_item_share"
-        android:icon="?attr/ic_share"
-        android:title="@string/share"
-        app:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/action_settings"
         android:orderInCategory="1"
         android:title="@string/settings"

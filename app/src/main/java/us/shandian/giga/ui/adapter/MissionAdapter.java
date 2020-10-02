@@ -588,7 +588,7 @@ public class MissionAdapter extends Adapter<ViewHolder> implements Handler.Callb
             }
             applyChanges();
 
-            String msg = String.format(mContext.getString(R.string.deleted_downloads), mHidden.size());
+            @SuppressLint("StringFormatMatches") String msg = String.format(mContext.getString(R.string.deleted_downloads), mHidden.size());
             mSnackbar = Snackbar.make(mView, msg, Snackbar.LENGTH_INDEFINITE);
             mSnackbar.setAction(R.string.undo, s -> {
                 Iterator<Mission> i = mHidden.iterator();
@@ -665,9 +665,6 @@ public class MissionAdapter extends Adapter<ViewHolder> implements Handler.Callb
         }
 
         switch (id) {
-            case R.id.menu_item_share:
-                shareFile(h.item.mission);
-                return true;
             case R.id.delete:
                 mDeleter.append(h.item.mission);
                 applyChanges();
@@ -822,7 +819,6 @@ public class MissionAdapter extends Adapter<ViewHolder> implements Handler.Callb
         MenuItem cancel;
         MenuItem start;
         MenuItem pause;
-        MenuItem open;
         MenuItem queue;
         MenuItem showError;
         MenuItem delete;
@@ -857,7 +853,6 @@ public class MissionAdapter extends Adapter<ViewHolder> implements Handler.Callb
             cancel = menu.findItem(R.id.cancel);
             start = menu.findItem(R.id.start);
             pause = menu.findItem(R.id.pause);
-            open = menu.findItem(R.id.menu_item_share);
             queue = menu.findItem(R.id.queue);
             showError = menu.findItem(R.id.error_message_view);
             delete = menu.findItem(R.id.delete);
@@ -883,7 +878,6 @@ public class MissionAdapter extends Adapter<ViewHolder> implements Handler.Callb
             cancel.setVisible(false);
             start.setVisible(false);
             pause.setVisible(false);
-            open.setVisible(false);
             queue.setVisible(false);
             showError.setVisible(false);
             delete.setVisible(false);
@@ -924,7 +918,6 @@ public class MissionAdapter extends Adapter<ViewHolder> implements Handler.Callb
                     }
                 }
             } else {
-                open.setVisible(true);
                 delete.setVisible(true);
                 checksum.setVisible(true);
             }
