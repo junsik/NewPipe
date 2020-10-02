@@ -91,14 +91,6 @@
             android:theme="@android:style/Theme.NoDisplay" />
         <activity android:name=".report.ErrorActivity" />
 
-        <!-- giga get related -->
-        <activity
-            android:name=".download.DownloadActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask" />
-
-        <service android:name="us.shandian.giga.service.DownloadManagerService" />
-
         <activity
             android:name=".util.FilePickerActivityHelper"
             android:label="@string/app_name"

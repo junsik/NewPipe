@@ -1,6 +1,5 @@
 package org.schabi.newpipe;
 
-import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,9 +26,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.app.NotificationCompat;
-import androidx.fragment.app.FragmentManager;
 
-import org.schabi.newpipe.download.DownloadDialog;
 import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
@@ -38,7 +35,6 @@ import org.schabi.newpipe.extractor.channel.ChannelInfo;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.playlist.PlaylistInfo;
 import org.schabi.newpipe.extractor.stream.StreamInfo;
-import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.player.helper.PlayerHelper;
 import org.schabi.newpipe.player.playqueue.ChannelPlayQueue;
 import org.schabi.newpipe.player.playqueue.PlayQueue;
@@ -48,7 +44,6 @@ import org.schabi.newpipe.report.UserAction;
 import org.schabi.newpipe.util.DeviceUtils;
 import org.schabi.newpipe.util.Constants;
 import org.schabi.newpipe.util.ExtractorHelper;
-import org.schabi.newpipe.util.ListHelper;
 import org.schabi.newpipe.util.NavigationHelper;
 import org.schabi.newpipe.util.PermissionHelper;
 import org.schabi.newpipe.util.ShareUtils;
@@ -474,15 +469,6 @@ public class RouterActivity extends AppCompatActivity {
             return;
         }
 
-        if (selectedChoiceKey.equals(getString(R.string.download_key))) {
-            if (PermissionHelper.checkStoragePermissions(this,
-                    PermissionHelper.DOWNLOAD_DIALOG_REQUEST_CODE)) {
-                selectionIsDownload = true;
-                openDownloadDialog();
-            }
-            return;
-        }
-
         // stop and bypass FetcherService if InfoScreen was selected since
         // StreamDetailFragment can fetch data itself
         if (selectedChoiceKey.equals(getString(R.string.show_info_key))) {
@@ -512,31 +498,6 @@ public class RouterActivity extends AppCompatActivity {
         finish();
     }
 
-    @SuppressLint("CheckResult")
-    private void openDownloadDialog() {
-        ExtractorHelper.getStreamInfo(currentServiceId, currentUrl, true)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((@NonNull StreamInfo result) -> {
-                    final List<VideoStream> sortedVideoStreams = ListHelper
-                            .getSortedStreamVideosList(this, result.getVideoStreams(),
-                                    result.getVideoOnlyStreams(), false);
-                    final int selectedVideoStreamIndex = ListHelper
-                            .getDefaultResolutionIndex(this, sortedVideoStreams);
-
-                    final FragmentManager fm = getSupportFragmentManager();
-                    final DownloadDialog downloadDialog = DownloadDialog.newInstance(result);
-                    downloadDialog.setVideoStreams(sortedVideoStreams);
-                    downloadDialog.setAudioStreams(result.getAudioStreams());
-                    downloadDialog.setSelectedVideoStream(selectedVideoStreamIndex);
-                    downloadDialog.show(fm, "downloadDialog");
-                    fm.executePendingTransactions();
-                    downloadDialog.getDialog().setOnDismissListener(dialog -> finish());
-                }, (@NonNull Throwable throwable) -> {
-                    showUnsupportedUrlDialog(currentUrl);
-                });
-    }
-
     @Override
     public void onRequestPermissionsResult(final int requestCode,
                                            @NonNull final String[] permissions,
@@ -546,9 +507,6 @@ public class RouterActivity extends AppCompatActivity {
                 finish();
                 return;
             }
-        }
-        if (requestCode == PermissionHelper.DOWNLOAD_DIALOG_REQUEST_CODE) {
-            openDownloadDialog();
         }
     }
 

@@ -26,7 +26,6 @@ import org.schabi.newpipe.R;
 import org.schabi.newpipe.RouterActivity;
 import org.schabi.newpipe.about.AboutActivity;
 import org.schabi.newpipe.database.feed.model.FeedGroupEntity;
-import org.schabi.newpipe.download.DownloadActivity;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
@@ -542,16 +541,6 @@ public final class NavigationHelper {
     public static void openSettings(final Context context) {
         final Intent intent = new Intent(context, SettingsActivity.class);
         context.startActivity(intent);
-    }
-
-    public static boolean openDownloads(final Activity activity) {
-        if (!PermissionHelper.checkStoragePermissions(
-                activity, PermissionHelper.DOWNLOADS_REQUEST_CODE)) {
-            return false;
-        }
-        final Intent intent = new Intent(activity, DownloadActivity.class);
-        activity.startActivity(intent);
-        return true;
     }
 
     public static Intent getPlayQueueActivityIntent(final Context context) {

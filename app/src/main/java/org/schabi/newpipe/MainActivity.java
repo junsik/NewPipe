@@ -74,7 +74,6 @@ import org.schabi.newpipe.util.KioskTranslator;
 import org.schabi.newpipe.util.Localization;
 import org.schabi.newpipe.util.NavigationHelper;
 import org.schabi.newpipe.util.PeertubeHelper;
-import org.schabi.newpipe.util.PermissionHelper;
 import org.schabi.newpipe.util.SerializedCache;
 import org.schabi.newpipe.util.ServiceHelper;
 import org.schabi.newpipe.util.StateSaver;
@@ -104,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int ITEM_ID_SUBSCRIPTIONS = -1;
     private static final int ITEM_ID_FEED = -2;
     private static final int ITEM_ID_BOOKMARKS = -3;
-    private static final int ITEM_ID_DOWNLOADS = -4;
     private static final int ITEM_ID_HISTORY = -5;
     private static final int ITEM_ID_SETTINGS = 0;
     private static final int ITEM_ID_ABOUT = 1;
@@ -178,9 +176,6 @@ public class MainActivity extends AppCompatActivity {
         drawerItems.getMenu()
                 .add(R.id.menu_tabs_group, ITEM_ID_BOOKMARKS, ORDER, R.string.tab_bookmarks)
                 .setIcon(ThemeHelper.resolveResourceIdFromAttr(this, R.attr.ic_bookmark));
-        drawerItems.getMenu()
-                .add(R.id.menu_tabs_group, ITEM_ID_DOWNLOADS, ORDER, R.string.downloads)
-                .setIcon(ThemeHelper.resolveResourceIdFromAttr(this, R.attr.ic_file_download));
         drawerItems.getMenu()
                 .add(R.id.menu_tabs_group, ITEM_ID_HISTORY, ORDER, R.string.action_history)
                 .setIcon(ThemeHelper.resolveResourceIdFromAttr(this, R.attr.ic_history));
@@ -261,9 +256,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case ITEM_ID_BOOKMARKS:
                 NavigationHelper.openBookmarksFragment(getSupportFragmentManager());
-                break;
-            case ITEM_ID_DOWNLOADS:
-                NavigationHelper.openDownloads(this);
                 break;
             case ITEM_ID_HISTORY:
                 NavigationHelper.openStatisticFragment(getSupportFragmentManager());
@@ -433,9 +425,6 @@ public class MainActivity extends AppCompatActivity {
                 .add(R.id.menu_tabs_group, ITEM_ID_BOOKMARKS, ORDER, R.string.tab_bookmarks)
                 .setIcon(ThemeHelper.resolveResourceIdFromAttr(this, R.attr.ic_bookmark));
         drawerItems.getMenu()
-                .add(R.id.menu_tabs_group, ITEM_ID_DOWNLOADS, ORDER, R.string.downloads)
-                .setIcon(ThemeHelper.resolveResourceIdFromAttr(this, R.attr.ic_file_download));
-        drawerItems.getMenu()
                 .add(R.id.menu_tabs_group, ITEM_ID_HISTORY, ORDER, R.string.action_history)
                 .setIcon(ThemeHelper.resolveResourceIdFromAttr(this, R.attr.ic_history));
 
@@ -599,18 +588,6 @@ public class MainActivity extends AppCompatActivity {
             if (i == PackageManager.PERMISSION_DENIED) {
                 return;
             }
-        }
-        switch (requestCode) {
-            case PermissionHelper.DOWNLOADS_REQUEST_CODE:
-                NavigationHelper.openDownloads(this);
-                break;
-            case PermissionHelper.DOWNLOAD_DIALOG_REQUEST_CODE:
-                final Fragment fragment = getSupportFragmentManager()
-                        .findFragmentById(R.id.fragment_player_holder);
-                if (fragment instanceof VideoDetailFragment) {
-                    ((VideoDetailFragment) fragment).openDownloadDialog();
-                }
-                break;
         }
     }
 

@@ -61,10 +61,8 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 
 import org.schabi.newpipe.R;
 import org.schabi.newpipe.ReCaptchaActivity;
-import org.schabi.newpipe.download.DownloadDialog;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
-import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipe.extractor.stream.AudioStream;
@@ -212,7 +210,6 @@ public class VideoDetailFragment
     private TextView detailControlsBackground;
     private TextView detailControlsPopup;
     private TextView detailControlsAddToPlaylist;
-    private TextView detailControlsDownload;
     private TextView appendControlsDetail;
     private TextView detailDurationView;
     private TextView detailPositionView;
@@ -584,12 +581,6 @@ public class VideoDetailFragment
                             .show(getFM(), TAG);
                 }
                 break;
-            case R.id.detail_controls_download:
-                if (PermissionHelper.checkStoragePermissions(activity,
-                        PermissionHelper.DOWNLOAD_DIALOG_REQUEST_CODE)) {
-                    this.openDownloadDialog();
-                }
-                break;
             case R.id.detail_uploader_root_layout:
                 if (TextUtils.isEmpty(currentInfo.getSubChannelUrl())) {
                     if (!TextUtils.isEmpty(currentInfo.getUploaderUrl())) {
@@ -654,9 +645,6 @@ public class VideoDetailFragment
             case R.id.detail_controls_popup:
                 openPopupPlayer(true);
                 break;
-            case R.id.detail_controls_download:
-                NavigationHelper.openDownloads(activity);
-                break;
             case R.id.overlay_thumbnail:
             case R.id.overlay_metadata_layout:
                 if (currentInfo != null) {
@@ -720,7 +708,6 @@ public class VideoDetailFragment
         detailControlsBackground = rootView.findViewById(R.id.detail_controls_background);
         detailControlsPopup = rootView.findViewById(R.id.detail_controls_popup);
         detailControlsAddToPlaylist = rootView.findViewById(R.id.detail_controls_playlist_append);
-        detailControlsDownload = rootView.findViewById(R.id.detail_controls_download);
         appendControlsDetail = rootView.findViewById(R.id.touch_append_detail);
         detailDurationView = rootView.findViewById(R.id.detail_duration_view);
         detailPositionView = rootView.findViewById(R.id.detail_position_view);
@@ -769,7 +756,6 @@ public class VideoDetailFragment
             detailControlsAddToPlaylist.setBackgroundColor(transparent);
             detailControlsBackground.setBackgroundColor(transparent);
             detailControlsPopup.setBackgroundColor(transparent);
-            detailControlsDownload.setBackgroundColor(transparent);
         }
 
     }
@@ -786,8 +772,6 @@ public class VideoDetailFragment
         detailControlsBackground.setOnClickListener(this);
         detailControlsPopup.setOnClickListener(this);
         detailControlsAddToPlaylist.setOnClickListener(this);
-        detailControlsDownload.setOnClickListener(this);
-        detailControlsDownload.setOnLongClickListener(this);
 
         detailControlsBackground.setLongClickable(true);
         detailControlsPopup.setLongClickable(true);
@@ -1596,7 +1580,6 @@ public class VideoDetailFragment
         switch (info.getStreamType()) {
             case LIVE_STREAM:
             case AUDIO_LIVE_STREAM:
-                detailControlsDownload.setVisibility(View.GONE);
                 break;
             default:
                 if (info.getAudioStreams().isEmpty()) {
@@ -1643,32 +1626,6 @@ public class VideoDetailFragment
             uploaderTextView.setSelected(true);
         } else {
             uploaderTextView.setVisibility(View.GONE);
-        }
-    }
-
-
-    public void openDownloadDialog() {
-        try {
-            final DownloadDialog downloadDialog = DownloadDialog.newInstance(currentInfo);
-            downloadDialog.setVideoStreams(sortedVideoStreams);
-            downloadDialog.setAudioStreams(currentInfo.getAudioStreams());
-            downloadDialog.setSelectedVideoStream(selectedVideoStreamIndex);
-            downloadDialog.setSubtitleStreams(currentInfo.getSubtitles());
-
-            downloadDialog.show(activity.getSupportFragmentManager(), "downloadDialog");
-        } catch (final Exception e) {
-            final ErrorActivity.ErrorInfo info = ErrorActivity.ErrorInfo.make(UserAction.UI_ERROR,
-                    ServiceList.all()
-                            .get(currentInfo
-                                    .getServiceId())
-                            .getServiceInfo()
-                            .getName(), "",
-                    R.string.could_not_setup_download_menu);
-
-            ErrorActivity.reportError(activity,
-                    e,
-                    activity.getClass(),
-                    activity.findViewById(android.R.id.content), info);
         }
     }
 

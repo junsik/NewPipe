@@ -29,8 +29,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
 
-import us.shandian.giga.io.StoredFileHelper;
-
 public class Utility {
 
     public enum FileType {
@@ -212,45 +210,6 @@ public class Utility {
         Toast.makeText(context, R.string.msg_copied, Toast.LENGTH_SHORT).show();
     }
 
-    public static String checksum(StoredFileHelper source, String algorithm) {
-        MessageDigest md;
-
-        try {
-            md = MessageDigest.getInstance(algorithm);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
-        SharpStream i;
-
-        try {
-            i = source.getStream();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        byte[] buf = new byte[1024];
-        int len;
-
-        try {
-            while ((len = i.read(buf)) != -1) {
-                md.update(buf, 0, len);
-            }
-        } catch (IOException e) {
-            // nothing to do
-        }
-
-        byte[] digest = md.digest();
-
-        // HEX
-        StringBuilder sb = new StringBuilder();
-        for (byte b : digest) {
-            sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
-        }
-
-        return sb.toString();
-
-    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static boolean mkdir(File p, boolean allDirs) {
