@@ -340,16 +340,14 @@ public abstract class BaseListFragment<I, N> extends BaseStateFragment<I>
             StreamDialogEntry.setEnabledEntries(
                     StreamDialogEntry.enqueue_on_background,
                     StreamDialogEntry.start_here_on_background,
-                    StreamDialogEntry.append_playlist,
-                    StreamDialogEntry.share);
+                    StreamDialogEntry.append_playlist);
         } else {
             StreamDialogEntry.setEnabledEntries(
                     StreamDialogEntry.enqueue_on_background,
                     StreamDialogEntry.enqueue_on_popup,
                     StreamDialogEntry.start_here_on_background,
                     StreamDialogEntry.start_here_on_popup,
-                    StreamDialogEntry.append_playlist,
-                    StreamDialogEntry.share);
+                    StreamDialogEntry.append_playlist);
         }
 
         new InfoItemDialog(activity, item, StreamDialogEntry.getCommands(context),

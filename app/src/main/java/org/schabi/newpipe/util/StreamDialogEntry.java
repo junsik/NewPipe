@@ -43,10 +43,7 @@ public enum StreamDialogEntry {
             PlaylistAppendDialog.fromStreamInfoItems(Collections.singletonList(item))
                     .show(fragment.getFragmentManager(), "StreamDialogEntry@append_playlist");
         }
-    }),
-
-    share(R.string.share, (fragment, item) ->
-            ShareUtils.shareUrl(fragment.getContext(), item.getName(), item.getUrl()));
+    });
 
 
     ///////////////

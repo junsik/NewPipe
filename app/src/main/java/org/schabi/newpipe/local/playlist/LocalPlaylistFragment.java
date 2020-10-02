@@ -762,8 +762,7 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
                     StreamDialogEntry.start_here_on_background,
                     StreamDialogEntry.set_as_playlist_thumbnail,
                     StreamDialogEntry.delete,
-                    StreamDialogEntry.append_playlist,
-                    StreamDialogEntry.share);
+                    StreamDialogEntry.append_playlist);
         } else {
             StreamDialogEntry.setEnabledEntries(
                     StreamDialogEntry.enqueue_on_background,
@@ -772,8 +771,7 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
                     StreamDialogEntry.start_here_on_popup,
                     StreamDialogEntry.set_as_playlist_thumbnail,
                     StreamDialogEntry.delete,
-                    StreamDialogEntry.append_playlist,
-                    StreamDialogEntry.share);
+                    StreamDialogEntry.append_playlist);
 
             StreamDialogEntry.start_here_on_popup.setCustomAction(
                     (fragment, infoItemDuplicate) -> NavigationHelper.
