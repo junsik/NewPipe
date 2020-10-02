@@ -1,8 +1,10 @@
 package com.baramnetworks.skyplayer;
 
+import android.app.Application;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -12,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,6 +22,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
+import org.schabi.newpipe.App;
 import org.schabi.newpipe.BuildConfig;
 import org.schabi.newpipe.MainActivity;
 import org.schabi.newpipe.NewPipeDatabase;
@@ -29,6 +33,7 @@ public class SkyMainActivity extends MainActivity {
 
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private static final Application APP = App.getApp();
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -85,7 +90,7 @@ public class SkyMainActivity extends MainActivity {
                 new DialogInterface.OnClickListener() {
             public void onClick(final DialogInterface dialog, final int id) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://skyplayer-app.baramnetworks.com")));
+                        Uri.parse("https://play.google.com/store/apps/details?id=com.baramnetworks.skyplayerapp")));
                 dialog.cancel();
             }
         });
@@ -104,6 +109,12 @@ public class SkyMainActivity extends MainActivity {
                                                       final String apkLocationUrl,
                                                       final long versionCode) {
         final int notificationId = 2000;
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(APP);
+        // Check if user has enabled/disabled update checking
+        // and if the current apk is a github one or not.
+        if (!prefs.getBoolean(APP.getString(R.string.update_app_key), true)) {
+            return;
+        }
 
         if (BuildConfig.VERSION_CODE < versionCode) {
             showUpdatePopup();

@@ -16,8 +16,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import androidx.core.text.HtmlCompat;
-import androidx.preference.PreferenceManager;
 import android.provider.Settings;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -46,12 +44,17 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
@@ -250,6 +253,7 @@ public class VideoDetailFragment
     private boolean bound;
     private MainPlayer playerService;
     private VideoPlayerImpl player;
+    private AdView adView;
 
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -368,6 +372,7 @@ public class VideoDetailFragment
 
     /*////////////////////////////////////////////////////////////////////////*/
 
+
     public static VideoDetailFragment getInstance(final int serviceId, final String videoUrl,
                                                   final String name, final PlayQueue playQueue) {
         final VideoDetailFragment instance = new VideoDetailFragment();
@@ -414,7 +419,13 @@ public class VideoDetailFragment
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_video_detail, container, false);
+        final View v = inflater.inflate(R.layout.fragment_video_detail, container, false);
+
+        MobileAds.initialize(v.getContext());
+        adView = v.findViewById(R.id.adView2);
+        final AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+        return v;
     }
 
     @Override
@@ -422,6 +433,9 @@ public class VideoDetailFragment
         super.onPause();
         if (currentWorker != null) {
             currentWorker.dispose();
+        }
+        if (adView != null) {
+            adView.pause();
         }
         saveCurrentAndRestoreDefaultBrightness();
         PreferenceManager.getDefaultSharedPreferences(requireContext())
@@ -435,6 +449,9 @@ public class VideoDetailFragment
     public void onResume() {
         super.onResume();
 
+        if (adView != null) {
+            adView.resume();
+        }
         activity.sendBroadcast(new Intent(ACTION_VIDEO_FRAGMENT_RESUMED));
 
         setupBrightness();
@@ -471,6 +488,9 @@ public class VideoDetailFragment
     public void onDestroy() {
         super.onDestroy();
 
+        if (adView != null) {
+            adView.destroy();
+        }
         // Stop the service when user leaves the app with double back press
         // if video player is selected. Otherwise unbind
         if (activity.isFinishing() && player != null && player.videoPlayerSelected()) {

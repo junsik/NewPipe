@@ -99,7 +99,7 @@
                     android:maxLines="1"
                     android:textColor="@color/drawer_header_font_color"
                     android:textSize="@dimen/drawer_header_service_title_text_size"
-                    tools:text="YouTube" />
+                    tools:text="SkyPlayer" />
             </LinearLayout>
 
             <ImageView
