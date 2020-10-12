@@ -9,4 +9,12 @@
         <key>version_name</key>
         <value>""</value>
     </entry>
+    <entry>
+        <key>apkLocationUrl</key>
+        <value>""</value>
+    </entry>
+    <entry>
+        <key>tabJson</key>
+        <value>{"tabs":[{"tab_id":0}]}</value>
+    </entry>
 </defaultsMap>

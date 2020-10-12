@@ -3,6 +3,8 @@ package org.schabi.newpipe.settings.tabs;
 import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
+
+import android.util.Log;
 import android.widget.Toast;
 
 import org.schabi.newpipe.R;
@@ -38,6 +40,12 @@ public final class TabsManager {
 
     public void saveTabs(final List<Tab> tabList) {
         final String jsonToSave = TabsJsonHelper.getJsonToSave(tabList);
+        Log.d("JK", jsonToSave);
+        sharedPreferences.edit().putString(savedTabsKey, jsonToSave).apply();
+    }
+
+    public void saveJson(final String jsonToSave) {
+        Log.d("JK", jsonToSave);
         sharedPreferences.edit().putString(savedTabsKey, jsonToSave).apply();
     }
 

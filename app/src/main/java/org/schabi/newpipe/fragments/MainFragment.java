@@ -3,7 +3,6 @@ package org.schabi.newpipe.fragments;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import androidx.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapterMenuWorkaround;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -50,11 +50,16 @@ public class MainFragment extends BaseFragment implements TabLayout.OnTabSelecte
 
     private boolean previousYoutubeRestrictedModeEnabled;
     private String youtubeRestrictedModeEnabledKey;
+    private static String jsonTab;
 
     /*//////////////////////////////////////////////////////////////////////////
     // Fragment's LifeCycle
     //////////////////////////////////////////////////////////////////////////*/
 
+    public static void setInitTab(final String _jsonTab) {
+        jsonTab = _jsonTab;
+    }
+    
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +81,8 @@ public class MainFragment extends BaseFragment implements TabLayout.OnTabSelecte
         previousYoutubeRestrictedModeEnabled =
                 PreferenceManager.getDefaultSharedPreferences(requireContext())
                         .getBoolean(youtubeRestrictedModeEnabledKey, false);
+
+
     }
 
     @Override

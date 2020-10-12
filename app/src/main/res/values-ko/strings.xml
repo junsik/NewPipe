@@ -571,4 +571,8 @@
     <string name="notification_scale_to_square_image_title">1 : 1 비율로 썸네일 조정</string>
     <string name="settings_category_notification_title">알림</string>
     <string name="title_activity_play_queue">재생큐</string>
+    <string name="feed_update_threshold_title">피드 업데이트 주기</string>
+    <string name="feed_update_threshold_summary">마지막 업데이트 후 구독이 오래된 것으로 취급되는 시간 — %s</string>
+    <string name="feed_use_dedicated_fetch_method_title">사용 가능한 경우 지정된 피드에서 가져 오기</string>
+    <string name="feed_use_dedicated_fetch_method_summary">일부 서비스에서 사용할 수 있지만 일반적으로 훨씬 더 빠릅니다. 하지만 제한된 항목과 종종 불완전한 정보를 반환 할 수 있습니다 (예 : 기간 없음, 항목 유형, 라이브 상태 없음).</string>
 </resources>

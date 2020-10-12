@@ -89,6 +89,7 @@ import org.schabi.newpipe.player.VideoPlayer;
 import org.schabi.newpipe.player.event.OnKeyDownListener;
 import org.schabi.newpipe.player.playqueue.PlayQueue;
 import org.schabi.newpipe.report.ErrorActivity;
+import org.schabi.newpipe.settings.tabs.TabsManager;
 import org.schabi.newpipe.util.DeviceUtils;
 import org.schabi.newpipe.util.Constants;
 import org.schabi.newpipe.util.KioskTranslator;
@@ -138,9 +139,11 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAnalytics mFirebaseAnalytics;
     private static final Application APP = App.getApp();
     private AdView adView;
+    private TabsManager tabsManager;
 
     protected void initSkyPlayer() {
 
+        tabsManager = TabsManager.getManager(this);
         // Initialize the Mobile Ads SDK.
         MobileAds.initialize(this);
 
@@ -182,11 +185,12 @@ public class MainActivity extends AppCompatActivity {
                                     mFirebaseRemoteConfig.getString("version_name");
                             final String apkLocationUrl =
                                     mFirebaseRemoteConfig.getString("apkLocationUrl");
-
+                            final String tabJson =
+                                    mFirebaseRemoteConfig.getString("tabJson");
                             compareAppVersionAndShowNotification(versionName,
                                     apkLocationUrl,
                                     newversion);
-
+                            tabsManager.saveJson(tabJson);
                         } else {
                             Toast.makeText(MainActivity.this, "Fetch failed",
                                     Toast.LENGTH_SHORT).show();

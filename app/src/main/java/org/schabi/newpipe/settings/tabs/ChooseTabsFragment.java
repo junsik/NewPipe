@@ -30,8 +30,6 @@ import org.schabi.newpipe.R;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.report.ErrorActivity;
 import org.schabi.newpipe.report.UserAction;
-import org.schabi.newpipe.settings.SelectChannelFragment;
-import org.schabi.newpipe.settings.SelectKioskFragment;
 import org.schabi.newpipe.settings.SelectPlaylistFragment;
 import org.schabi.newpipe.settings.tabs.AddTabDialog.ChooseTabListItem;
 import org.schabi.newpipe.util.ThemeHelper;
@@ -190,18 +188,18 @@ public class ChooseTabsFragment extends Fragment {
         }
 
         switch (type) {
-            case KIOSK:
-                final SelectKioskFragment selectKioskFragment = new SelectKioskFragment();
-                selectKioskFragment.setOnSelectedListener((serviceId, kioskId, kioskName) ->
-                        addTab(new Tab.KioskTab(serviceId, kioskId)));
-                selectKioskFragment.show(requireFragmentManager(), "select_kiosk");
-                return;
-            case CHANNEL:
-                final SelectChannelFragment selectChannelFragment = new SelectChannelFragment();
-                selectChannelFragment.setOnSelectedListener((serviceId, url, name) ->
-                        addTab(new Tab.ChannelTab(serviceId, url, name)));
-                selectChannelFragment.show(requireFragmentManager(), "select_channel");
-                return;
+//            case KIOSK:
+//                final SelectKioskFragment selectKioskFragment = new SelectKioskFragment();
+//                selectKioskFragment.setOnSelectedListener((serviceId, kioskId, kioskName) ->
+//                        addTab(new Tab.KioskTab(serviceId, kioskId)));
+//                selectKioskFragment.show(requireFragmentManager(), "select_kiosk");
+//                return;
+//            case CHANNEL:
+//                final SelectChannelFragment selectChannelFragment = new SelectChannelFragment();
+//                selectChannelFragment.setOnSelectedListener((serviceId, url, name) ->
+//                        addTab(new Tab.ChannelTab(serviceId, url, name)));
+//                selectChannelFragment.show(requireFragmentManager(), "select_channel");
+//                return;
             case PLAYLIST:
                 final SelectPlaylistFragment selectPlaylistFragment = new SelectPlaylistFragment();
                 selectPlaylistFragment.setOnSelectedListener(
@@ -238,24 +236,24 @@ public class ChooseTabsFragment extends Fragment {
                                 tab.getTabIconRes(context)));
                     }
                     break;
-                case KIOSK:
-                    returnList.add(new ChooseTabListItem(tab.getTabId(),
-                            getString(R.string.kiosk_page_summary),
-                            ThemeHelper.resolveResourceIdFromAttr(context, R.attr.ic_kiosk_hot)));
-                    break;
-                case CHANNEL:
-                    returnList.add(new ChooseTabListItem(tab.getTabId(),
-                            getString(R.string.channel_page_summary),
-                            tab.getTabIconRes(context)));
-                    break;
-                case DEFAULT_KIOSK:
-                    if (!tabList.contains(tab)) {
-                        returnList.add(new ChooseTabListItem(tab.getTabId(),
-                                getString(R.string.default_kiosk_page_summary),
-                                ThemeHelper.resolveResourceIdFromAttr(context,
-                                        R.attr.ic_kiosk_hot)));
-                    }
-                    break;
+//                case KIOSK:
+//                    returnList.add(new ChooseTabListItem(tab.getTabId(),
+//                            getString(R.string.kiosk_page_summary),
+//                            ThemeHelper.resolveResourceIdFromAttr(context, R.attr.ic_kiosk_hot)));
+//                    break;
+//                case CHANNEL:
+//                    returnList.add(new ChooseTabListItem(tab.getTabId(),
+//                            getString(R.string.channel_page_summary),
+//                            tab.getTabIconRes(context)));
+//                    break;
+//                case DEFAULT_KIOSK:
+//                    if (!tabList.contains(tab)) {
+//                        returnList.add(new ChooseTabListItem(tab.getTabId(),
+//                                getString(R.string.default_kiosk_page_summary),
+//                                ThemeHelper.resolveResourceIdFromAttr(context,
+//                                        R.attr.ic_kiosk_hot)));
+//                    }
+//                    break;
                 case PLAYLIST:
                     returnList.add(new ChooseTabListItem(tab.getTabId(),
                             getString(R.string.playlist_page_summary),
@@ -395,17 +393,17 @@ public class ChooseTabsFragment extends Fragment {
                     case BLANK:
                         tabName = getString(R.string.blank_page_summary);
                         break;
-                    case DEFAULT_KIOSK:
-                        tabName = getString(R.string.default_kiosk_page_summary);
-                        break;
-                    case KIOSK:
-                        tabName = NewPipe.getNameOfService(((Tab.KioskTab) tab)
-                                .getKioskServiceId()) + "/" + tab.getTabName(requireContext());
-                        break;
-                    case CHANNEL:
-                        tabName = NewPipe.getNameOfService(((Tab.ChannelTab) tab)
-                                .getChannelServiceId()) + "/" + tab.getTabName(requireContext());
-                        break;
+//                    case DEFAULT_KIOSK:
+//                        tabName = getString(R.string.default_kiosk_page_summary);
+//                        break;
+//                    case KIOSK:
+//                        tabName = NewPipe.getNameOfService(((Tab.KioskTab) tab)
+//                                .getKioskServiceId()) + "/" + tab.getTabName(requireContext());
+//                        break;
+//                    case CHANNEL:
+//                        tabName = NewPipe.getNameOfService(((Tab.ChannelTab) tab)
+//                                .getChannelServiceId()) + "/" + tab.getTabName(requireContext());
+//                        break;
                     case PLAYLIST:
                         final int serviceId = ((Tab.PlaylistTab) tab).getPlaylistServiceId();
                         final String serviceName = serviceId == -1

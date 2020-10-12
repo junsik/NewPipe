@@ -83,10 +83,10 @@ public abstract class Tab {
 
         if (jsonObject != null) {
             switch (type) {
-                case KIOSK:
-                    return new KioskTab(jsonObject);
-                case CHANNEL:
-                    return new ChannelTab(jsonObject);
+                //case KIOSK:
+                //    return new KioskTab(jsonObject);
+                //case CHANNEL:
+                //    return new ChannelTab(jsonObject);
                 case PLAYLIST:
                     return new PlaylistTab(jsonObject);
             }
@@ -147,13 +147,13 @@ public abstract class Tab {
 
     public enum Type {
         BLANK(new BlankTab()),
-        DEFAULT_KIOSK(new DefaultKioskTab()),
-        SUBSCRIPTIONS(new SubscriptionsTab()),
-        FEED(new FeedTab()),
+        //DEFAULT_KIOSK(new DefaultKioskTab()),
+        //SUBSCRIPTIONS(new SubscriptionsTab()),
+        //FEED(new FeedTab()),
         BOOKMARKS(new BookmarksTab()),
         HISTORY(new HistoryTab()),
-        KIOSK(new KioskTab()),
-        CHANNEL(new ChannelTab()),
+        //KIOSK(new KioskTab()),
+        //CHANNEL(new ChannelTab()),
         PLAYLIST(new PlaylistTab());
 
         private Tab tab;
