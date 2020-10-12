@@ -16,6 +16,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -34,10 +37,24 @@ public class SkyMainActivity extends MainActivity {
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
     private FirebaseAnalytics mFirebaseAnalytics;
     private static final Application APP = App.getApp();
+    private AdView adView;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize the Mobile Ads SDK.
+        MobileAds.initialize(this);
+
+        // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
+        // values/strings.xml.
+        adView = findViewById(R.id.ad_view);
+
+        // Create an ad request.
+        final AdRequest adRequest = new AdRequest.Builder().build();
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest);
 
         final AppDatabase db = NewPipeDatabase.getInstance(this);
         final InitPlayList pl = new InitPlayList(db);
@@ -78,7 +95,7 @@ public class SkyMainActivity extends MainActivity {
                 });
     }
 
-    public void showUpdatePopup() {
+    public void showUpdatePopup(final String apkLocationUrl) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 new ContextThemeWrapper(this,
                 R.style.DarkDialogTheme));
@@ -90,7 +107,7 @@ public class SkyMainActivity extends MainActivity {
                 new DialogInterface.OnClickListener() {
             public void onClick(final DialogInterface dialog, final int id) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://play.google.com/store/apps/details?id=com.baramnetworks.skyplayerapp")));
+                        Uri.parse(apkLocationUrl)));
                 dialog.cancel();
             }
         });
@@ -117,7 +134,7 @@ public class SkyMainActivity extends MainActivity {
         }
 
         if (BuildConfig.VERSION_CODE < versionCode) {
-            showUpdatePopup();
+            showUpdatePopup(apkLocationUrl);
             // A pending intent to open the apk location url in the browser.
             final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(apkLocationUrl));
             final PendingIntent pendingIntent
@@ -137,5 +154,29 @@ public class SkyMainActivity extends MainActivity {
                     = NotificationManagerCompat.from(this);
             notificationManager.notify(notificationId, notificationBuilder.build());
         }
+    }
+
+    @Override
+    public void onPause() {
+        if (adView != null) {
+            adView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adView != null) {
+            adView.resume();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (adView != null) {
+            adView.destroy();
+        }
+        super.onDestroy();
     }
 }

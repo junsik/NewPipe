@@ -26,8 +26,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
-import org.schabi.newpipe.MainActivity;
 import org.schabi.newpipe.R;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.stream.StreamInfo;
@@ -95,6 +97,7 @@ public abstract class ServicePlayerActivity extends AppCompatActivity
     private ProgressBar progressBar;
 
     private Menu menu;
+    private AdView adView;
 
     ////////////////////////////////////////////////////////////////////////////
     // Abstracts
@@ -126,6 +129,19 @@ public abstract class ServicePlayerActivity extends AppCompatActivity
         ThemeHelper.setTheme(this);
         setContentView(R.layout.activity_player_queue_control);
         rootView = findViewById(R.id.main_content);
+
+        // Initialize the Mobile Ads SDK.
+        MobileAds.initialize(this);
+
+        // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
+        // values/strings.xml.
+        adView = findViewById(R.id.adView);
+
+        // Create an ad request.
+        final AdRequest adRequest = new AdRequest.Builder().build();
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest);
 
         final Toolbar toolbar = rootView.findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -183,12 +199,6 @@ public abstract class ServicePlayerActivity extends AppCompatActivity
                 return true;
             case R.id.action_system_audio:
                 startActivity(new Intent(Settings.ACTION_SOUND_SETTINGS));
-                return true;
-            case R.id.action_switch_main:
-                this.player.setRecovery();
-                getApplicationContext().startActivity(
-                        getSwitchIntent(MainActivity.class, MainPlayer.PlayerType.VIDEO)
-                                .putExtra(BasePlayer.START_PAUSED, !this.player.isPlaying()));
                 return true;
         }
         return onPlayerOptionSelected(item) || super.onOptionsItemSelected(item);
@@ -376,13 +386,13 @@ public abstract class ServicePlayerActivity extends AppCompatActivity
             openPlaylistAppendDialog(Collections.singletonList(item));
             return true;
         });
-
-        final MenuItem share = popupMenu.getMenu().add(RECYCLER_ITEM_POPUP_MENU_GROUP_ID, 3,
-                Menu.NONE, R.string.share);
-        share.setOnMenuItemClickListener(menuItem -> {
-            shareUrl(item.getTitle(), item.getUrl());
-            return true;
-        });
+//
+//        final MenuItem share = popupMenu.getMenu().add(RECYCLER_ITEM_POPUP_MENU_GROUP_ID, 3,
+//                Menu.NONE, R.string.share);
+//        share.setOnMenuItemClickListener(menuItem -> {
+//            shareUrl(item.getTitle(), item.getUrl());
+//            return true;
+//        });
 
         popupMenu.show();
     }

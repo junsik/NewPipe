@@ -6,7 +6,6 @@ import android.view.MenuItem;
 
 import org.schabi.newpipe.R;
 import org.schabi.newpipe.util.NavigationHelper;
-import org.schabi.newpipe.util.PermissionHelper;
 
 public final class BackgroundPlayerActivity extends ServicePlayerActivity {
 
@@ -48,18 +47,6 @@ public final class BackgroundPlayerActivity extends ServicePlayerActivity {
 
     @Override
     public boolean onPlayerOptionSelected(final MenuItem item) {
-        if (item.getItemId() == R.id.action_switch_popup) {
-
-            if (!PermissionHelper.isPopupEnabled(this)) {
-                PermissionHelper.showPopupEnablementToast(this);
-                return true;
-            }
-
-            this.player.setRecovery();
-            NavigationHelper.playOnPopupPlayer(
-                    getApplicationContext(), player.playQueue, this.player.isPlaying());
-            return true;
-        }
 
         if (item.getItemId() == R.id.action_switch_background) {
             this.player.setRecovery();
@@ -77,8 +64,6 @@ public final class BackgroundPlayerActivity extends ServicePlayerActivity {
             return;
         }
 
-        menu.findItem(R.id.action_switch_popup)
-                .setVisible(!((VideoPlayerImpl) player).popupPlayerSelected());
         menu.findItem(R.id.action_switch_background)
                 .setVisible(!((VideoPlayerImpl) player).audioPlayerSelected());
     }

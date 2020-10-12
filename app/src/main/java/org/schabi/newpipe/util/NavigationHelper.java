@@ -7,18 +7,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import androidx.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.schabi.newpipe.MainActivity;
@@ -35,7 +39,6 @@ import org.schabi.newpipe.extractor.stream.StreamInfo;
 import org.schabi.newpipe.extractor.stream.VideoStream;
 import org.schabi.newpipe.fragments.MainFragment;
 import org.schabi.newpipe.fragments.detail.VideoDetailFragment;
-import org.schabi.newpipe.fragments.list.channel.ChannelFragment;
 import org.schabi.newpipe.fragments.list.comments.CommentsFragment;
 import org.schabi.newpipe.fragments.list.kiosk.KioskFragment;
 import org.schabi.newpipe.fragments.list.playlist.PlaylistFragment;
@@ -60,6 +63,7 @@ import java.util.ArrayList;
 public final class NavigationHelper {
     public static final String MAIN_FRAGMENT_TAG = "main_fragment_tag";
     public static final String SEARCH_FRAGMENT_TAG = "search_fragment_tag";
+    private static InterstitialAd mInterstitialAd;
 
     private NavigationHelper() { }
 
@@ -127,10 +131,33 @@ public final class NavigationHelper {
                 .putExtra(BasePlayer.IS_MUTED, isMuted);
     }
 
+    public static void initAd(final Context context) {
+        if (mInterstitialAd == null) {
+            MobileAds.initialize(context);
+            mInterstitialAd = new InterstitialAd(context);
+            mInterstitialAd.setAdUnitId("ca-app-pub-7734852415793745/6131749849");
+            mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        }
+    }
+
     public static void playOnMainPlayer(final AppCompatActivity activity,
                                         final PlayQueue queue,
                                         final boolean autoPlay) {
-        playOnMainPlayer(activity.getSupportFragmentManager(), queue, autoPlay);
+
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    // Load the next interstitial.
+                    mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                    playOnMainPlayer(activity.getSupportFragmentManager(), queue, autoPlay);
+                }
+            });
+            mInterstitialAd.show();
+        } else {
+            playOnMainPlayer(activity.getSupportFragmentManager(), queue, autoPlay);
+        }
     }
 
     public static void playOnMainPlayer(final FragmentManager fragmentManager,
@@ -391,11 +418,12 @@ public final class NavigationHelper {
     public static void openChannelFragment(final FragmentManager fragmentManager,
                                            final int serviceId, final String url,
                                            final String name) {
-        defaultTransaction(fragmentManager)
+/*        defaultTransaction(fragmentManager)
                 .replace(R.id.fragment_holder, ChannelFragment.getInstance(serviceId, url,
                         name == null ? "" : name))
                 .addToBackStack(null)
-                .commit();
+                .commit();*/
+        //
     }
 
     public static void openCommentsFragment(final FragmentManager fragmentManager,
@@ -516,7 +544,22 @@ public final class NavigationHelper {
         if (title != null && !title.isEmpty()) {
             openIntent.putExtra(Constants.KEY_TITLE, title);
         }
-        context.startActivity(openIntent);
+
+
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    // Load the next interstitial.
+                    mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                    context.startActivity(openIntent);
+                }
+            });
+            mInterstitialAd.show();
+        } else {
+            context.startActivity(openIntent);
+        }
+
     }
 
     public static void openMainActivity(final Context context) {

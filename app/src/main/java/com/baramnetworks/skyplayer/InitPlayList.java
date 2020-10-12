@@ -22,12 +22,13 @@ public class InitPlayList extends AsyncTask<Void, Void, Void> {
                     )));
     private final AppDatabase db;
 
-    InitPlayList(final AppDatabase db) {
+    public InitPlayList(final AppDatabase db) {
         this.db = db;
     }
 
     @Override
     protected Void doInBackground(final Void... voids) {
+
         final PlaylistRemoteDAO pl = db.playlistRemoteDAO();
         pl.upsert(new PlaylistRemoteEntity(0, "K-POP Top 100",
                 KPOP_URL,

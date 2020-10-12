@@ -302,6 +302,8 @@ public class VideoPlayerImpl extends VideoPlayer
         this.secondaryControls = view.findViewById(R.id.secondaryControls);
         this.shareButton = view.findViewById(R.id.share);
 
+        this.shareButton.setVisibility(View.GONE);
+
         this.queueLayout = view.findViewById(R.id.playQueuePanel);
         this.itemsListCloseButton = view.findViewById(R.id.playQueueClose);
         this.itemsList = view.findViewById(R.id.playQueue);
@@ -370,7 +372,7 @@ public class VideoPlayerImpl extends VideoPlayer
             secondaryControls.setVisibility(View.INVISIBLE);
             moreOptionsButton.setImageDrawable(AppCompatResources.getDrawable(service,
                     R.drawable.ic_expand_more_white_24dp));
-            shareButton.setVisibility(View.VISIBLE);
+            //shareButton.setVisibility(View.VISIBLE);
             showHideKodiButton();
             openInBrowser.setVisibility(View.VISIBLE);
             muteButton.setVisibility(View.VISIBLE);

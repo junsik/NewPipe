@@ -261,7 +261,7 @@ public abstract class BaseListFragment<I, N> extends BaseStateFragment<I>
         infoListAdapter.setOnStreamSelectedListener(new OnClickGesture<StreamInfoItem>() {
             @Override
             public void selected(final StreamInfoItem selectedItem) {
-                onStreamSelected(selectedItem);
+                showStreamDialog(selectedItem);
             }
 
             @Override

@@ -52,9 +52,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
@@ -253,7 +250,6 @@ public class VideoDetailFragment
     private boolean bound;
     private MainPlayer playerService;
     private VideoPlayerImpl player;
-    private AdView adView;
 
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -420,11 +416,6 @@ public class VideoDetailFragment
     public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_video_detail, container, false);
-
-        MobileAds.initialize(v.getContext());
-        adView = v.findViewById(R.id.adView2);
-        final AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
         return v;
     }
 
@@ -433,9 +424,6 @@ public class VideoDetailFragment
         super.onPause();
         if (currentWorker != null) {
             currentWorker.dispose();
-        }
-        if (adView != null) {
-            adView.pause();
         }
         saveCurrentAndRestoreDefaultBrightness();
         PreferenceManager.getDefaultSharedPreferences(requireContext())
@@ -449,9 +437,6 @@ public class VideoDetailFragment
     public void onResume() {
         super.onResume();
 
-        if (adView != null) {
-            adView.resume();
-        }
         activity.sendBroadcast(new Intent(ACTION_VIDEO_FRAGMENT_RESUMED));
 
         setupBrightness();
@@ -488,9 +473,6 @@ public class VideoDetailFragment
     public void onDestroy() {
         super.onDestroy();
 
-        if (adView != null) {
-            adView.destroy();
-        }
         // Stop the service when user leaves the app with double back press
         // if video player is selected. Otherwise unbind
         if (activity.isFinishing() && player != null && player.videoPlayerSelected()) {
@@ -618,9 +600,9 @@ public class VideoDetailFragment
             case R.id.detail_thumbnail_root_layout:
                 openVideoPlayer();
                 break;
-            case R.id.detail_title_root_layout:
-                toggleTitleAndDescription();
-                break;
+//            case R.id.detail_title_root_layout:
+//                toggleTitleAndDescription();
+//                break;
             case R.id.overlay_thumbnail:
             case R.id.overlay_metadata_layout:
             case R.id.overlay_buttons_layout:

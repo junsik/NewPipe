@@ -30,7 +30,7 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-7734852415793745~8031154877"/>
         <activity
-            android:name="com.baramnetworks.skyplayer.SkyMainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask">
             <intent-filter>

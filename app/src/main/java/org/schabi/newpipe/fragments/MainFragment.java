@@ -21,11 +21,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapterMenuWorkaround;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.tabs.TabLayout;
 
 import org.schabi.newpipe.BaseFragment;
@@ -55,7 +50,6 @@ public class MainFragment extends BaseFragment implements TabLayout.OnTabSelecte
 
     private boolean previousYoutubeRestrictedModeEnabled;
     private String youtubeRestrictedModeEnabledKey;
-    private AdView mAdView;
 
     /*//////////////////////////////////////////////////////////////////////////
     // Fragment's LifeCycle
@@ -88,17 +82,7 @@ public class MainFragment extends BaseFragment implements TabLayout.OnTabSelecte
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              @Nullable final ViewGroup container,
                              @Nullable final Bundle savedInstanceState) {
-        final View v = inflater.inflate(R.layout.fragment_main, container, false);
-
-        MobileAds.initialize(v.getContext(), new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(final InitializationStatus initializationStatus) {
-            }
-        });
-        mAdView = v.findViewById(R.id.adView);
-        final AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        return v;
+        return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
     @Override
@@ -129,10 +113,6 @@ public class MainFragment extends BaseFragment implements TabLayout.OnTabSelecte
         } else if (hasTabsChanged) {
             setupTabs();
         }
-
-        if (mAdView != null) {
-            mAdView.resume();
-        }
     }
 
     @Override
@@ -142,19 +122,6 @@ public class MainFragment extends BaseFragment implements TabLayout.OnTabSelecte
         if (viewPager != null) {
             viewPager.setAdapter(null);
         }
-
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
-    }
-
-
-    @Override
-    public void onPause() {
-        if (mAdView != null) {
-            mAdView.pause();
-        }
-        super.onPause();
     }
 
     /*//////////////////////////////////////////////////////////////////////////

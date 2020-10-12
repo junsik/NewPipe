@@ -422,7 +422,7 @@ public class SearchFragment extends BaseListFragment<SearchInfo, ListExtractor.I
                 final MenuItem musicItem = menu.add(2,
                         itemId++,
                         0,
-                        "YouTube Music");
+                        "Tube Music");
                 musicItem.setEnabled(false);
             }
             menuItemToFilterName.put(itemId, filter);

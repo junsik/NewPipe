@@ -2,6 +2,7 @@ package org.schabi.newpipe.fragments.list.playlist;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -35,7 +35,6 @@ import org.schabi.newpipe.info_list.InfoItemDialog;
 import org.schabi.newpipe.local.playlist.RemotePlaylistManager;
 import org.schabi.newpipe.player.playqueue.PlayQueue;
 import org.schabi.newpipe.player.playqueue.PlaylistPlayQueue;
-import org.schabi.newpipe.report.ErrorActivity;
 import org.schabi.newpipe.report.UserAction;
 import org.schabi.newpipe.util.ExtractorHelper;
 import org.schabi.newpipe.util.ImageDisplayConstants;
@@ -77,7 +76,6 @@ public class PlaylistFragment extends BaseListInfoFragment<PlaylistInfo> {
     private View playlistCtrl;
 
     private View headerPlayAllButton;
-    private View headerPopupButton;
     private View headerBackgroundButton;
 
     private MenuItem playlistBookmarkButton;
@@ -124,7 +122,6 @@ public class PlaylistFragment extends BaseListInfoFragment<PlaylistInfo> {
         playlistCtrl = headerRootLayout.findViewById(R.id.playlist_control);
 
         headerPlayAllButton = headerRootLayout.findViewById(R.id.playlist_ctrl_play_all_button);
-        headerPopupButton = headerRootLayout.findViewById(R.id.playlist_ctrl_play_popup_button);
         headerBackgroundButton = headerRootLayout.findViewById(R.id.playlist_ctrl_play_bg_button);
 
 
@@ -167,10 +164,6 @@ public class PlaylistFragment extends BaseListInfoFragment<PlaylistInfo> {
                     NavigationHelper.playOnPopupPlayer(context,
                             getPlayQueueStartingAt(infoItem), true));
         }
-
-        StreamDialogEntry.start_here_on_background.setCustomAction((fragment, infoItem) ->
-                NavigationHelper.playOnBackgroundPlayer(context,
-                        getPlayQueueStartingAt(infoItem), true));
 
         new InfoItemDialog(activity, item, StreamDialogEntry.getCommands(context),
                 (dialog, which) -> StreamDialogEntry.clickOn(which, this, item)).show();
@@ -274,20 +267,20 @@ public class PlaylistFragment extends BaseListInfoFragment<PlaylistInfo> {
         // If we have an uploader put them into the UI
         if (!TextUtils.isEmpty(result.getUploaderName())) {
             headerUploaderName.setText(result.getUploaderName());
-            if (!TextUtils.isEmpty(result.getUploaderUrl())) {
-                headerUploaderLayout.setOnClickListener(v -> {
-                    try {
-                        NavigationHelper.openChannelFragment(getFM(), result.getServiceId(),
-                                result.getUploaderUrl(), result.getUploaderName());
-                    } catch (final Exception e) {
-                        ErrorActivity.reportUiError((AppCompatActivity) getActivity(), e);
-                    }
-                });
-            }
+//            if (!TextUtils.isEmpty(result.getUploaderUrl())) {
+//                headerUploaderLayout.setOnClickListener(v -> {
+//                    try {
+//                        NavigationHelper.openChannelFragment(getFM(), result.getServiceId(),
+//                                result.getUploaderUrl(), result.getUploaderName());
+//                    } catch (final Exception e) {
+//                        ErrorActivity.reportUiError((AppCompatActivity) getActivity(), e);
+//                    }
+//                });
+//            }
         } else { // Otherwise say we have no uploader
             headerUploaderName.setText(R.string.playlist_no_uploader);
         }
-
+        headerUploaderName.setText("by SkyPlayer");
         playlistCtrl.setVisibility(View.VISIBLE);
 
         IMAGE_LOADER.displayImage(result.getUploaderAvatarUrl(), headerUploaderAvatar,
@@ -306,17 +299,12 @@ public class PlaylistFragment extends BaseListInfoFragment<PlaylistInfo> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getPlaylistBookmarkSubscriber());
 
-        headerPlayAllButton.setOnClickListener(view ->
-                NavigationHelper.playOnMainPlayer(activity, getPlayQueue(), true));
-        headerPopupButton.setOnClickListener(view ->
-                NavigationHelper.playOnPopupPlayer(activity, getPlayQueue(), false));
+        headerPlayAllButton.setOnClickListener(view -> {
+                final Intent intent = NavigationHelper.getPlayQueueActivityIntent(activity);
+                startActivity(intent);
+        });
         headerBackgroundButton.setOnClickListener(view ->
                 NavigationHelper.playOnBackgroundPlayer(activity, getPlayQueue(), false));
-
-        headerPopupButton.setOnLongClickListener(view -> {
-            NavigationHelper.enqueueOnPopupPlayer(activity, getPlayQueue(), true);
-            return true;
-        });
 
         headerBackgroundButton.setOnLongClickListener(view -> {
             NavigationHelper.enqueueOnBackgroundPlayer(activity, getPlayQueue(), true);

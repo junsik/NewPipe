@@ -16,11 +16,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
+            <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ad_view"
+                android:layout_marginTop="?attr/actionBarSize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="top"
+                ads:adSize="SMART_BANNER"
+                ads:adUnitId="ca-app-pub-7734852415793745/6271458444"
+                app:behavior_hideable="true"
+                app:behavior_peekHeight="0dp" />
+
             <FrameLayout
                 android:id="@+id/fragment_holder"
+                android:layout_below="@+id/ad_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="?attr/actionBarSize" />
+                android:layout_height="match_parent"/>
 
         </RelativeLayout>
 

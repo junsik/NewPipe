@@ -79,7 +79,6 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
     private TextView headerStreamCount;
     private View playlistControl;
     private View headerPlayAllButton;
-    private View headerPopupButton;
     private View headerBackgroundButton;
 
     private ItemTouchHelper itemTouchHelper;
@@ -157,7 +156,6 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
 
         playlistControl = headerRootLayout.findViewById(R.id.playlist_control);
         headerPlayAllButton = headerRootLayout.findViewById(R.id.playlist_ctrl_play_all_button);
-        headerPopupButton = headerRootLayout.findViewById(R.id.playlist_ctrl_play_popup_button);
         headerBackgroundButton = headerRootLayout.findViewById(R.id.playlist_ctrl_play_bg_button);
 
         return headerRootLayout;
@@ -176,10 +174,7 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
             @Override
             public void selected(final LocalItem selectedItem) {
                 if (selectedItem instanceof PlaylistStreamEntry) {
-                    final PlaylistStreamEntry item = (PlaylistStreamEntry) selectedItem;
-                    NavigationHelper.openVideoDetailFragment(getFM(),
-                            item.getStreamEntity().getServiceId(), item.getStreamEntity().getUrl(),
-                            item.getStreamEntity().getTitle());
+                    showStreamItemDialog((PlaylistStreamEntry) selectedItem);
                 }
             }
 
@@ -279,9 +274,6 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
         }
         if (headerPlayAllButton != null) {
             headerPlayAllButton.setOnClickListener(null);
-        }
-        if (headerPopupButton != null) {
-            headerPopupButton.setOnClickListener(null);
         }
 
         if (databaseSubscription != null) {
@@ -493,15 +485,8 @@ public class LocalPlaylistFragment extends BaseLocalListFragment<List<PlaylistSt
 
         headerPlayAllButton.setOnClickListener(view ->
                 NavigationHelper.playOnMainPlayer(activity, getPlayQueue(), true));
-        headerPopupButton.setOnClickListener(view ->
-                NavigationHelper.playOnPopupPlayer(activity, getPlayQueue(), false));
         headerBackgroundButton.setOnClickListener(view ->
                 NavigationHelper.playOnBackgroundPlayer(activity, getPlayQueue(), false));
-
-        headerPopupButton.setOnLongClickListener(view -> {
-            NavigationHelper.enqueueOnPopupPlayer(activity, getPlayQueue(), true);
-            return true;
-        });
 
         headerBackgroundButton.setOnLongClickListener(view -> {
             NavigationHelper.enqueueOnBackgroundPlayer(activity, getPlayQueue(), true);

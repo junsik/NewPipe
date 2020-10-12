@@ -35,8 +35,4 @@
         android:title="@string/play_queue_audio_settings"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/action_switch_main"
-        android:orderInCategory="3"
-        android:title="@string/switch_to_main"
-        app:showAsAction="never"/>
 </menu>

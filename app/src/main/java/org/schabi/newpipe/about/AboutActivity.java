@@ -140,14 +140,6 @@ public class AboutActivity extends AppCompatActivity {
             final TextView version = rootView.findViewById(R.id.app_version);
             version.setText(BuildConfig.VERSION_NAME);
 
-            final View githubLink = rootView.findViewById(R.id.github_link);
-            githubLink.setOnClickListener(nv ->
-                    openUrlInBrowser(context, context.getString(R.string.github_url)));
-
-            final View donationLink = rootView.findViewById(R.id.donation_link);
-            donationLink.setOnClickListener(v ->
-                    openUrlInBrowser(context, context.getString(R.string.donation_url)));
-
             final View websiteLink = rootView.findViewById(R.id.website_link);
             websiteLink.setOnClickListener(nv ->
                     openUrlInBrowser(context, context.getString(R.string.website_url)));

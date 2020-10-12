@@ -483,15 +483,7 @@
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:background="?attr/separator_color" />
-                    <com.google.android.gms.ads.AdView
-                        xmlns:ads="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/adView2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        ads:adSize="SMART_BANNER"
-                        ads:adUnitId="ca-app-pub-7734852415793745/3983458995">
-                    </com.google.android.gms.ads.AdView>
+
                     <!--DESCRIPTIONS-->
                     <LinearLayout
                         android:id="@+id/detail_description_root_layout"

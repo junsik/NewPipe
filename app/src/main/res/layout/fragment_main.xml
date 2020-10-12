@@ -15,21 +15,10 @@
         app:tabMinWidth="60dp"
         app:tabGravity="fill"/>
 
-    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="bottom"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-7734852415793745/6271458444" />
-
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/adView"
+        android:layout_height="fill_parent"
         android:layout_below="@id/main_tab_layout"/>
 
 </RelativeLayout>

@@ -55,7 +55,6 @@ public class StatisticsPlaylistFragment
     Parcelable itemsListState;
     private StatisticSortMode sortMode = StatisticSortMode.LAST_PLAYED;
     private View headerPlayAllButton;
-    private View headerPopupButton;
     private View headerBackgroundButton;
     private View playlistCtrl;
     private View sortButton;
@@ -129,7 +128,6 @@ public class StatisticsPlaylistFragment
                 .inflate(R.layout.statistic_playlist_control, itemsList, false);
         playlistCtrl = headerRootLayout.findViewById(R.id.playlist_control);
         headerPlayAllButton = headerRootLayout.findViewById(R.id.playlist_ctrl_play_all_button);
-        headerPopupButton = headerRootLayout.findViewById(R.id.playlist_ctrl_play_popup_button);
         headerBackgroundButton = headerRootLayout.findViewById(R.id.playlist_ctrl_play_bg_button);
         sortButton = headerRootLayout.findViewById(R.id.sortButton);
         sortButtonIcon = headerRootLayout.findViewById(R.id.sortButtonIcon);
@@ -145,11 +143,7 @@ public class StatisticsPlaylistFragment
             @Override
             public void selected(final LocalItem selectedItem) {
                 if (selectedItem instanceof StreamStatisticsEntry) {
-                    final StreamStatisticsEntry item = (StreamStatisticsEntry) selectedItem;
-                    NavigationHelper.openVideoDetailFragment(getFM(),
-                            item.getStreamEntity().getServiceId(),
-                            item.getStreamEntity().getUrl(),
-                            item.getStreamEntity().getTitle());
+                    showStreamDialog((StreamStatisticsEntry) selectedItem);
                 }
             }
 
@@ -245,9 +239,6 @@ public class StatisticsPlaylistFragment
         if (headerPlayAllButton != null) {
             headerPlayAllButton.setOnClickListener(null);
         }
-        if (headerPopupButton != null) {
-            headerPopupButton.setOnClickListener(null);
-        }
 
         if (databaseSubscription != null) {
             databaseSubscription.cancel();
@@ -322,8 +313,6 @@ public class StatisticsPlaylistFragment
 
         headerPlayAllButton.setOnClickListener(view ->
                 NavigationHelper.playOnMainPlayer(activity, getPlayQueue(), true));
-        headerPopupButton.setOnClickListener(view ->
-                NavigationHelper.playOnPopupPlayer(activity, getPlayQueue(), false));
         headerBackgroundButton.setOnClickListener(view ->
                 NavigationHelper.playOnBackgroundPlayer(activity, getPlayQueue(), false));
         sortButton.setOnClickListener(view -> toggleSortMode());
