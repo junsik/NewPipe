@@ -23,11 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_gravity="top"
                 ads:adSize="SMART_BANNER"
-                ads:adUnitId="ca-app-pub-7734852415793745/6271458444"
-                app:behavior_hideable="true"
-                app:behavior_peekHeight="0dp" />
+                ads:adUnitId="ca-app-pub-7734852415793745/6271458444" />
 
             <FrameLayout
                 android:id="@+id/fragment_holder"

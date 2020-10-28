@@ -206,12 +206,15 @@ public final class NavigationHelper {
     public static void playOnBackgroundPlayer(final Context context,
                                               final PlayQueue queue,
                                               final boolean resumePlayback) {
+        /*
         Toast.makeText(context, R.string.background_player_playing_toast,
                 Toast.LENGTH_SHORT).show();
         final Intent intent = getPlayerIntent(context, MainPlayer.class, queue,
                 resumePlayback);
         intent.putExtra(VideoPlayer.PLAYER_TYPE, VideoPlayer.PLAYER_TYPE_AUDIO);
         startService(context, intent);
+         */
+        playOnPopupPlayer(context, queue, resumePlayback);
     }
 
     public static void enqueueOnPopupPlayer(final Context context, final PlayQueue queue,

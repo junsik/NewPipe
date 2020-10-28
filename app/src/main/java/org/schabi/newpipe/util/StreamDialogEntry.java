@@ -17,7 +17,7 @@ public enum StreamDialogEntry {
     //////////////////////////////////////
 
     enqueue_on_background(R.string.enqueue_on_background, (fragment, item) ->
-            NavigationHelper.enqueueOnBackgroundPlayer(fragment.getContext(),
+            NavigationHelper.enqueueOnPopupPlayer(fragment.getContext(),
                     new SinglePlayQueue(item), false)),
 
     enqueue_on_popup(R.string.enqueue_on_popup, (fragment, item) ->
@@ -25,7 +25,7 @@ public enum StreamDialogEntry {
                     new SinglePlayQueue(item), false)),
 
     start_here_on_background(R.string.start_here_on_background, (fragment, item) ->
-            NavigationHelper.playOnBackgroundPlayer(fragment.getContext(),
+            NavigationHelper.playOnPopupPlayer(fragment.getContext(),
                     new SinglePlayQueue(item), true)),
 
     start_here_on_popup(R.string.start_here_on_popup, (fragment, item) ->

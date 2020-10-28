@@ -56,10 +56,6 @@ public class MainFragment extends BaseFragment implements TabLayout.OnTabSelecte
     // Fragment's LifeCycle
     //////////////////////////////////////////////////////////////////////////*/
 
-    public static void setInitTab(final String _jsonTab) {
-        jsonTab = _jsonTab;
-    }
-    
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

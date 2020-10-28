@@ -64,7 +64,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.baramnetworks.skyplayer.InitPlayList;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -160,8 +159,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationHelper.initAd(this);
 
         final AppDatabase db = NewPipeDatabase.getInstance(this);
-        final InitPlayList pl = new InitPlayList(db);
-        pl.execute();
+//        final InitPlayList pl = new InitPlayList(db);
+//        pl.execute();
 
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
