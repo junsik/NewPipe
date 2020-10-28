@@ -6,15 +6,12 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.BatteryManager;
 import android.os.Build;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
-import org.schabi.newpipe.App;
+import androidx.core.content.ContextCompat;
 
-import static android.content.Context.BATTERY_SERVICE;
-import static android.content.Context.UI_MODE_SERVICE;
+import org.schabi.newpipe.App;
 
 public final class DeviceUtils {
 
@@ -32,15 +29,14 @@ public final class DeviceUtils {
         final PackageManager pm = App.getApp().getPackageManager();
 
         // from doc: https://developer.android.com/training/tv/start/hardware.html#runtime-check
-        boolean isTv = ((UiModeManager) context.getSystemService(UI_MODE_SERVICE))
+        boolean isTv = ContextCompat.getSystemService(context, UiModeManager.class)
                 .getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION
                 || pm.hasSystemFeature(AMAZON_FEATURE_FIRE_TV)
                 || pm.hasSystemFeature(PackageManager.FEATURE_TELEVISION);
 
         // from https://stackoverflow.com/a/58932366
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            final boolean isBatteryAbsent
-                    = ((BatteryManager) context.getSystemService(BATTERY_SERVICE))
+            final boolean isBatteryAbsent = context.getSystemService(BatteryManager.class)
                     .getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY) == 0;
             isTv = isTv || (isBatteryAbsent
                     && !pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
@@ -73,18 +69,5 @@ public final class DeviceUtils {
             default:
                 return false;
         }
-    }
-
-    /*
-     * Compares current status bar height with default status bar height in Android and decides,
-     * does the device has cutout or not
-     * */
-    public static boolean hasCutout(final float statusBarHeight, final DisplayMetrics metrics) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            final float defaultStatusBarHeight = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 25, metrics);
-            return statusBarHeight > defaultStatusBarHeight;
-        }
-        return false;
     }
 }

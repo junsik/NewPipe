@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -200,41 +201,56 @@ public final class NavigationHelper {
         Toast.makeText(context, R.string.popup_playing_toast, Toast.LENGTH_SHORT).show();
         final Intent intent = getPlayerIntent(context, MainPlayer.class, queue, resumePlayback);
         intent.putExtra(VideoPlayer.PLAYER_TYPE, VideoPlayer.PLAYER_TYPE_POPUP);
-        startService(context, intent);
+        ContextCompat.startForegroundService(context, intent);
     }
 
     public static void playOnBackgroundPlayer(final Context context,
                                               final PlayQueue queue,
                                               final boolean resumePlayback) {
-        /*
         Toast.makeText(context, R.string.background_player_playing_toast,
                 Toast.LENGTH_SHORT).show();
         final Intent intent = getPlayerIntent(context, MainPlayer.class, queue,
                 resumePlayback);
         intent.putExtra(VideoPlayer.PLAYER_TYPE, VideoPlayer.PLAYER_TYPE_AUDIO);
-        startService(context, intent);
-         */
-        playOnPopupPlayer(context, queue, resumePlayback);
+
+        ContextCompat.startForegroundService(context, intent);
+    }
+
+    public static void enqueueOnVideoPlayer(final Context context, final PlayQueue queue,
+                                            final boolean resumePlayback) {
+        enqueueOnVideoPlayer(context, queue, false, resumePlayback);
+    }
+
+    public static void enqueueOnVideoPlayer(final Context context, final PlayQueue queue,
+                                            final boolean selectOnAppend,
+                                            final boolean resumePlayback) {
+
+        Toast.makeText(context, R.string.enqueued, Toast.LENGTH_SHORT).show();
+        final Intent intent = getPlayerEnqueueIntent(
+                context, MainPlayer.class, queue, selectOnAppend, resumePlayback);
+
+        intent.putExtra(VideoPlayer.PLAYER_TYPE, VideoPlayer.PLAYER_TYPE_VIDEO);
+        ContextCompat.startForegroundService(context, intent);
     }
 
     public static void enqueueOnPopupPlayer(final Context context, final PlayQueue queue,
                                             final boolean resumePlayback) {
-        enqueueOnPopupPlayer(context, queue, false, resumePlayback);
+        //enqueueOnPopupPlayer(context, queue, false, resumePlayback);
     }
 
     public static void enqueueOnPopupPlayer(final Context context, final PlayQueue queue,
                                             final boolean selectOnAppend,
                                             final boolean resumePlayback) {
-        if (!PermissionHelper.isPopupEnabled(context)) {
-            PermissionHelper.showPopupEnablementToast(context);
-            return;
-        }
-
-        Toast.makeText(context, R.string.popup_playing_append, Toast.LENGTH_SHORT).show();
-        final Intent intent = getPlayerEnqueueIntent(
-                context, MainPlayer.class, queue, selectOnAppend, resumePlayback);
-        intent.putExtra(VideoPlayer.PLAYER_TYPE, VideoPlayer.PLAYER_TYPE_POPUP);
-        startService(context, intent);
+//        if (!PermissionHelper.isPopupEnabled(context)) {
+//            PermissionHelper.showPopupEnablementToast(context);
+//            return;
+//        }
+//
+//        Toast.makeText(context, R.string.enqueued, Toast.LENGTH_SHORT).show();
+//        final Intent intent = getPlayerEnqueueIntent(
+//                context, MainPlayer.class, queue, selectOnAppend, resumePlayback);
+//        intent.putExtra(VideoPlayer.PLAYER_TYPE, VideoPlayer.PLAYER_TYPE_POPUP);
+//        ContextCompat.startForegroundService(context, intent);
     }
 
     public static void enqueueOnBackgroundPlayer(final Context context, final PlayQueue queue,
@@ -246,19 +262,11 @@ public final class NavigationHelper {
                                                  final PlayQueue queue,
                                                  final boolean selectOnAppend,
                                                  final boolean resumePlayback) {
-        Toast.makeText(context, R.string.background_player_append, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, R.string.enqueued, Toast.LENGTH_SHORT).show();
         final Intent intent = getPlayerEnqueueIntent(
                 context, MainPlayer.class, queue, selectOnAppend, resumePlayback);
         intent.putExtra(VideoPlayer.PLAYER_TYPE, VideoPlayer.PLAYER_TYPE_AUDIO);
-        startService(context, intent);
-    }
-
-    public static void startService(@NonNull final Context context, @NonNull final Intent intent) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent);
-        } else {
-            context.startService(intent);
-        }
+        ContextCompat.startForegroundService(context, intent);
     }
 
     /*//////////////////////////////////////////////////////////////////////////
@@ -414,8 +422,19 @@ public final class NavigationHelper {
     }
 
     public static void expandMainPlayer(final Context context) {
-        final Intent intent = new Intent(VideoDetailFragment.ACTION_SHOW_MAIN_PLAYER);
-        context.sendBroadcast(intent);
+        context.sendBroadcast(new Intent(VideoDetailFragment.ACTION_SHOW_MAIN_PLAYER));
+    }
+
+    public static void sendPlayerStartedEvent(final Context context) {
+        context.sendBroadcast(new Intent(VideoDetailFragment.ACTION_PLAYER_STARTED));
+    }
+
+    public static void showMiniPlayer(final FragmentManager fragmentManager) {
+        final VideoDetailFragment instance = VideoDetailFragment.getInstanceInCollapsedState();
+        defaultTransaction(fragmentManager)
+                .replace(R.id.fragment_player_holder, instance)
+                .runOnCommit(() -> sendPlayerStartedEvent(instance.requireActivity()))
+                .commitAllowingStateLoss();
     }
 
     public static void openChannelFragment(final FragmentManager fragmentManager,

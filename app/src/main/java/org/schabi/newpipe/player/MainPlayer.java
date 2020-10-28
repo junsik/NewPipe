@@ -30,6 +30,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import androidx.core.content.ContextCompat;
+
 import org.schabi.newpipe.R;
 import org.schabi.newpipe.util.ThemeHelper;
 
@@ -91,7 +93,7 @@ public final class MainPlayer extends Service {
             Log.d(TAG, "onCreate() called");
         }
         assureCorrectAppLanguage(this);
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        windowManager = ContextCompat.getSystemService(this, WindowManager.class);
 
         ThemeHelper.setTheme(this);
         createView();
@@ -103,6 +105,8 @@ public final class MainPlayer extends Service {
         playerImpl = new VideoPlayerImpl(this);
         playerImpl.setup(layout);
         playerImpl.shouldUpdateOnProgress = true;
+
+        NotificationUtil.getInstance().createNotificationAndStartForeground(playerImpl, this);
     }
 
     @Override
@@ -147,6 +151,7 @@ public final class MainPlayer extends Service {
             // Android TV will handle back button in case controls will be visible
             // (one more additional unneeded click while the player is hidden)
             playerImpl.hideControls(0, 0);
+            playerImpl.onQueueClosed();
             // Notification shows information about old stream but if a user selects
             // a stream from backStack it's not actual anymore
             // So we should hide the notification at all.
@@ -195,6 +200,10 @@ public final class MainPlayer extends Service {
         }
 
         if (playerImpl != null) {
+            // Exit from fullscreen when user closes the player via notification
+            if (playerImpl.isFullscreen()) {
+                playerImpl.toggleFullscreen();
+            }
             removeViewFromParent();
 
             playerImpl.setRecovery();

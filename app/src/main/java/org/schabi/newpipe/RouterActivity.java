@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -26,6 +25,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.app.NotificationCompat;
+import androidx.core.widget.TextViewCompat;
+import androidx.preference.PreferenceManager;
 
 import org.schabi.newpipe.extractor.Info;
 import org.schabi.newpipe.extractor.NewPipe;
@@ -41,8 +42,8 @@ import org.schabi.newpipe.player.playqueue.PlayQueue;
 import org.schabi.newpipe.player.playqueue.PlaylistPlayQueue;
 import org.schabi.newpipe.player.playqueue.SinglePlayQueue;
 import org.schabi.newpipe.report.UserAction;
-import org.schabi.newpipe.util.DeviceUtils;
 import org.schabi.newpipe.util.Constants;
+import org.schabi.newpipe.util.DeviceUtils;
 import org.schabi.newpipe.util.ExtractorHelper;
 import org.schabi.newpipe.util.NavigationHelper;
 import org.schabi.newpipe.util.PermissionHelper;
@@ -321,7 +322,7 @@ public class RouterActivity extends AppCompatActivity {
             final RadioButton radioButton
                     = (RadioButton) inflater.inflate(R.layout.list_radio_icon_item, null);
             radioButton.setText(item.description);
-            radioButton.setCompoundDrawablesWithIntrinsicBounds(
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(radioButton,
                     AppCompatResources.getDrawable(getApplicationContext(), item.icon),
                     null, null, null);
             radioButton.setChecked(false);

@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -21,12 +20,12 @@ public class CustomBottomSheetBehavior extends BottomSheetBehavior<FrameLayout> 
         super(context, attrs);
     }
 
-    boolean visible;
     Rect globalRect = new Rect();
     private boolean skippingInterception = false;
     private final List<Integer> skipInterceptionOfElements = Arrays.asList(
             R.id.detail_content_root_layout, R.id.relatedStreamsLayout,
-            R.id.playQueuePanel, R.id.viewpager, R.id.bottomControls);
+            R.id.playQueuePanel, R.id.viewpager, R.id.bottomControls,
+            R.id.playPauseButton, R.id.playPreviousButton, R.id.playNextButton);
 
     @Override
     public boolean onInterceptTouchEvent(@NonNull final CoordinatorLayout parent,
@@ -39,17 +38,26 @@ public class CustomBottomSheetBehavior extends BottomSheetBehavior<FrameLayout> 
         }
 
         // Found that user still swiping, continue following
-        if (skippingInterception) {
+        if (skippingInterception || getState() == BottomSheetBehavior.STATE_SETTLING) {
             return false;
         }
 
+        // The interception listens for the child view with the id "fragment_player_holder",
+        // so the following two-finger gesture will be triggered only for the player view on
+        // portrait and for the top controls (visible) on landscape.
+        setSkipCollapsed(event.getPointerCount() == 2);
+        if (event.getPointerCount() == 2) {
+            return super.onInterceptTouchEvent(parent, child, event);
+        }
+
         // Don't need to do anything if bottomSheet isn't expanded
-        if (getState() == BottomSheetBehavior.STATE_EXPANDED) {
+        if (getState() == BottomSheetBehavior.STATE_EXPANDED
+                && event.getAction() == MotionEvent.ACTION_DOWN) {
             // Without overriding scrolling will not work when user touches these elements
             for (final Integer element : skipInterceptionOfElements) {
-                final ViewGroup viewGroup = child.findViewById(element);
-                if (viewGroup != null) {
-                    visible = viewGroup.getGlobalVisibleRect(globalRect);
+                final View view = child.findViewById(element);
+                if (view != null) {
+                    final boolean visible = view.getGlobalVisibleRect(globalRect);
                     if (visible
                             && globalRect.contains((int) event.getRawX(), (int) event.getRawY())) {
                         // Makes bottom part of the player draggable in portrait when

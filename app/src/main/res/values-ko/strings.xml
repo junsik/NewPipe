@@ -25,7 +25,6 @@
     <string name="play_audio">오디오</string>
     <string name="default_audio_format_title">기본 오디오 형식</string>
     <string name="download_dialog_title">다운로드</string>
-    <string name="next_video_title">다음</string>
     <string name="show_next_and_similar_title">다음/유사한 비디오 표시</string>
     <string name="unsupported_url">지원하지 않는 URL입니다</string>
     <string name="content_language_title">기본 컨텐츠 언어</string>
@@ -46,7 +45,6 @@
     <string name="settings_category_appearance_title">외관</string>
     <string name="settings_category_other_title">기타</string>
     <string name="background_player_playing_toast">백그라운드에서 재생 중</string>
-    <string name="play_btn_text">재생</string>
     <string name="network_error">네트워크 오류</string>
     <string name="use_tor_title">Tor 사용</string>
     <string name="use_tor_summary">(실험적) 향상된 프라이버시를 위해 다운로드 트래픽을 강제로 Tor를 통해 전송 (스트리밍 비디오는 아직 지원되지 않습니다).</string>
@@ -57,11 +55,10 @@
     <string name="autoplay_by_calling_app_summary">SkyPlayer가 다른 앱에서 호출되었을 때 동영상을 재생합니다</string>
     <string name="content">컨텐츠</string>
     <string name="show_age_restricted_content_title">연령 제한 컨텐츠</string>
-    <string name="video_is_age_restricted">연령 제한 비디오입니다. 설정 메뉴에서 시청 허용 여부를 변경하실 수 있습니다.</string>
     <string name="duration_live">라이브</string>
     <string name="general_error">오류</string>
     <string name="could_not_load_thumbnails">모든 썸네일을 불러올 수 없습니다</string>
-    <string name="youtube_signature_decryption_error">비디오 URL 서명을 복호화할 수 없습니다</string>
+    <string name="youtube_signature_deobfuscation_error">비디오 URL 서명을 복호화할 수 없습니다</string>
     <string name="parsing_error">웹사이트를 가져올 수 없습니다</string>
     <string name="light_parsing_error">웹사이트를 완전히 가져올 수 없습니다</string>
     <string name="content_not_available">컨텐츠를 사용할 수 없습니다</string>
@@ -90,7 +87,7 @@
     <string name="checksum">체크섬</string>
     <string name="open_in_popup_mode">팝업 모드로 열기</string>
     <string name="use_external_video_player_summary">일부 해상도에서 소리가 나지 않을 수 있습니다</string>
-    <string name="popup_mode_share_menu_title">SkyPlayer 팝업 모드</string>
+    <string name="popup_mode_share_menu_title">팝업 모드</string>
     <string name="subscribe_button_title">구독</string>
     <string name="subscribed_button_title">구독중</string>
     <string name="channel_unsubscribed">구독 취소됨</string>
@@ -99,15 +96,13 @@
     <string name="tab_main">메인 화면</string>
     <string name="tab_subscriptions">구독</string>
     <string name="fragment_feed_title">새로운 영상</string>
-    <string name="controls_background_title">백그라운드</string>
+    <string name="controls_background_title">백그라운</string>
     <string name="controls_popup_title">팝업</string>
     <string name="default_popup_resolution_title">기본 팝업 해상도</string>
     <string name="show_higher_resolutions_title">높은 해상도 표시</string>
     <string name="show_higher_resolutions_summary">일부 기기에서만 2K/4K 해상도 재생이 지원됩니다</string>
     <string name="default_video_format_title">기본 비디오 형식</string>
     <string name="black_theme_title">검은 테마</string>
-    <string name="popup_remember_size_pos_title">팝업 크기 및 위치 기억</string>
-    <string name="popup_remember_size_pos_summary">마지막으로 사용한 팝업 위치 및 크기를 기억합니다</string>
     <string name="player_gesture_controls_title">제스처 재생 조작</string>
     <string name="player_gesture_controls_summary">제스처를 사용해 화면 밝기와 음량을 조절합니다</string>
     <string name="show_search_suggestions_title">검색 제안</string>
@@ -140,7 +135,7 @@
     <string name="popup_resizing_indicator_title">크기 조절</string>
     <string name="best_resolution">최대 해상도</string>
     <string name="undo">되돌리기</string>
-    <string name="play_all">전부 재생</string>
+    <string name="play_all">재생큐</string>
     <string name="notification_channel_name">SkyPlayer 알림</string>
     <string name="notification_channel_description">SkyPlayer 백그라운드 및 팝업 플레이어 알림</string>
     <string name="unknown_content">[알 수 없음]</string>
@@ -151,7 +146,7 @@
     <string name="player_recoverable_failure">플레이어 오류로부터 복구 중</string>
     <string name="info_labels">무엇을:\\n요청:\\n컨텐츠 언어:\\n서비스:\\nGMT 기준 시간:\\n패키지:\\n버전:\\n안드로이드 버전:</string>
     <string name="search_no_results">결과 없음</string>
-    <string name="empty_subscription_feed_subtitle">구독할 항목을 추가하세요</string>
+    <string name="empty_subscription_feed_subtitle"></string>
     <string name="short_thousand">천</string>
     <string name="short_million">백만</string>
     <string name="short_billion">십억</string>
@@ -234,10 +229,10 @@
     <string name="play_queue_stream_detail">상세 정보</string>
     <string name="play_queue_audio_settings">오디오 설정</string>
     <string name="hold_to_append">눌러서 대기열에 추가</string>
-    <string name="enqueue_on_background">새 팝업으로 대기열에 추가</string>
-    <string name="enqueue_on_popup">새 팝업으로 대기열에 추가</string>
+    <string name="enqueue_stream">대기열에 추가</string>
+    <string name="enqueued">대기열에 추가되었습니다</string>
     <string name="start_here_on_main">여기서부터 재생</string>
-    <string name="start_here_on_background">새 팝업에서 재생</string>
+    <string name="start_here_on_background">재생</string>
     <string name="start_here_on_popup">새 팝업에서 재생</string>
     <string name="no_player_found_toast">스트림 플레이어를 찾을 수 없습니다 (VLC를 설치하여 동영상을 재생할 수 있습니다).</string>
     <string name="controls_download_desc">스트림 파일 다운로드하기</string>
@@ -488,7 +483,7 @@
     <string name="downloads_storage_ask_summary_kitkat">매 다운로드 마다 저장경로를 묻습니다.
 \n외장 SD카드에 다운로드 하고자 한다면 SAF를 선택하십시오</string>
     <plurals name="videos">
-        <item quantity="other">동영상</item>
+        <item quantity="other">%s 동영상</item>
     </plurals>
     <string name="enable_queue_limit_desc">하나의 다운로드가 동시에 진행됩니다</string>
     <string name="download_choose_new_path">적용하려면 다운로드 폴더를 변경하세요</string>
@@ -519,8 +514,6 @@
     <string name="recovering">복구하기</string>
     <string name="error_download_resource_gone">이 다운로드를 복구할 수 없습니다</string>
     <string name="choose_instance_prompt">인스턴스를 선택하세요</string>
-    <string name="enable_lock_screen_video_thumbnail_title">비디어 썸네일 화면 고정을 가능하게 한다</string>
-    <string name="enable_lock_screen_video_thumbnail_summary">백그라운드 플레이어를 사용하는 경우 비디오 썸네일은 잠금화면 상에 표시됩니다.</string>
     <string name="clear_download_history">다운로드 기록 삭제</string>
     <string name="delete_downloaded_files">다운로드된 파일 삭제</string>
     <string name="deleted_downloads">%1$d 다운로드 삭제</string>
@@ -556,7 +549,6 @@
     <string name="videos_string">비디오</string>
     <string name="clear_queue_confirmation_title">큐 삭제 전에 물어보기</string>
     <string name="clear_queue_confirmation_summary">다른 플레이어로 전환한 후 큐가 교체될 지도 모릅니다.</string>
-    <string name="notification_action_0_title">첫번째 버튼</string>
     <string name="notification_action_1_title">두번째 버튼</string>
     <string name="notification_action_2_title">세번째 버튼</string>
     <string name="notification_action_3_title">네번째 버튼</string>
@@ -567,12 +559,14 @@
     <string name="notification_action_shuffle">셔플</string>
     <string name="notification_actions_at_most_three">알림에서 보여질 최대 3가지 액션을 선택할 수 있습니다!</string>
     <string name="notification_actions_summary">아래의 각 알림 액션을 탭하여 편집하십시오. 오른쪽에 있는 확인란을 사용하여 알림에 표시 할 항목을 최대 3 개까지 선택하세요.</string>
-    <string name="notification_scale_to_square_image_summary">알림에 표시된 미리보기 이미지를 16 : 9에서 1 : 1 비율로 조정합니다 (왜곡 될 수 있음).</string>
-    <string name="notification_scale_to_square_image_title">1 : 1 비율로 썸네일 조정</string>
     <string name="settings_category_notification_title">알림</string>
     <string name="title_activity_play_queue">재생큐</string>
     <string name="feed_update_threshold_title">피드 업데이트 주기</string>
     <string name="feed_update_threshold_summary">마지막 업데이트 후 구독이 오래된 것으로 취급되는 시간 — %s</string>
     <string name="feed_use_dedicated_fetch_method_title">사용 가능한 경우 지정된 피드에서 가져 오기</string>
     <string name="feed_use_dedicated_fetch_method_summary">일부 서비스에서 사용할 수 있지만 일반적으로 훨씬 더 빠릅니다. 하지만 제한된 항목과 종종 불완전한 정보를 반환 할 수 있습니다 (예 : 기간 없음, 항목 유형, 라이브 상태 없음).</string>
+    <string name="notification_action_0_title">첫번째 버튼</string>
+    <string name="notification_scale_to_square_image_summary">알림에 표시되는 비디오 썸네일을 16:9에서 1:1 비율로 바꿉니다. (왜곡이 생길 수도 있습니다.)</string>
+    <string name="notification_scale_to_square_image_title">썸네일을 1:1 비율로 하기</string>
+    <string name="search_showing_result_for">%s에 대한 검색 결과</string>
 </resources>

@@ -33,6 +33,7 @@ import org.schabi.newpipe.extractor.stream.StreamType;
 import org.schabi.newpipe.fragments.list.BaseListInfoFragment;
 import org.schabi.newpipe.info_list.InfoItemDialog;
 import org.schabi.newpipe.local.playlist.RemotePlaylistManager;
+import org.schabi.newpipe.player.helper.PlayerHolder;
 import org.schabi.newpipe.player.playqueue.PlayQueue;
 import org.schabi.newpipe.player.playqueue.PlaylistPlayQueue;
 import org.schabi.newpipe.report.UserAction;
@@ -44,6 +45,7 @@ import org.schabi.newpipe.util.StreamDialogEntry;
 import org.schabi.newpipe.util.ThemeHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -77,7 +79,7 @@ public class PlaylistFragment extends BaseListInfoFragment<PlaylistInfo> {
 
     private View headerPlayAllButton;
     private View headerBackgroundButton;
-
+    private View headerPopupButton;
     private MenuItem playlistBookmarkButton;
 
     public static PlaylistFragment getInstance(final int serviceId, final String url,
@@ -122,6 +124,7 @@ public class PlaylistFragment extends BaseListInfoFragment<PlaylistInfo> {
         playlistCtrl = headerRootLayout.findViewById(R.id.playlist_control);
 
         headerPlayAllButton = headerRootLayout.findViewById(R.id.playlist_ctrl_play_all_button);
+        headerPopupButton = headerRootLayout.findViewById(R.id.playlist_ctrl_play_popup_button);
         headerBackgroundButton = headerRootLayout.findViewById(R.id.playlist_ctrl_play_bg_button);
 
 
@@ -147,15 +150,24 @@ public class PlaylistFragment extends BaseListInfoFragment<PlaylistInfo> {
             return;
         }
 
+        final ArrayList<StreamDialogEntry> entries = new ArrayList<>();
+
+        if (PlayerHolder.getType() != null) {
+            entries.add(StreamDialogEntry.enqueue);
+        }
         if (item.getStreamType() == StreamType.AUDIO_STREAM) {
-            StreamDialogEntry.setEnabledEntries(
-                    StreamDialogEntry.enqueue_on_background,
+            entries.addAll(Arrays.asList(
                     StreamDialogEntry.start_here_on_background,
-                    StreamDialogEntry.append_playlist);
+                    StreamDialogEntry.start_here_on_popup,
+                    StreamDialogEntry.append_playlist));
+
+            StreamDialogEntry.start_here_on_popup.setCustomAction((fragment, infoItem) ->
+                    NavigationHelper.playOnPopupPlayer(context,
+                            getPlayQueueStartingAt(infoItem), true));
         } else {
             StreamDialogEntry.setEnabledEntries(
-                    StreamDialogEntry.enqueue_on_background,
-                    StreamDialogEntry.enqueue_on_popup,
+//                    StreamDialogEntry.enqueue_on_background,
+////                    StreamDialogEntry.enqueue_on_popup,
                     StreamDialogEntry.start_here_on_background,
                     StreamDialogEntry.start_here_on_popup,
                     StreamDialogEntry.append_playlist);
@@ -164,6 +176,7 @@ public class PlaylistFragment extends BaseListInfoFragment<PlaylistInfo> {
                     NavigationHelper.playOnPopupPlayer(context,
                             getPlayQueueStartingAt(infoItem), true));
         }
+        StreamDialogEntry.setEnabledEntries(entries);
 
         new InfoItemDialog(activity, item, StreamDialogEntry.getCommands(context),
                 (dialog, which) -> StreamDialogEntry.clickOn(which, this, item)).show();
@@ -303,8 +316,15 @@ public class PlaylistFragment extends BaseListInfoFragment<PlaylistInfo> {
                 final Intent intent = NavigationHelper.getPlayQueueActivityIntent(activity);
                 startActivity(intent);
         });
+        headerPopupButton.setOnClickListener(view ->
+                NavigationHelper.playOnPopupPlayer(activity, getPlayQueue(), false));
         headerBackgroundButton.setOnClickListener(view ->
                 NavigationHelper.playOnBackgroundPlayer(activity, getPlayQueue(), false));
+
+        headerPopupButton.setOnLongClickListener(view -> {
+            NavigationHelper.enqueueOnPopupPlayer(activity, getPlayQueue(), true);
+            return true;
+        });
 
         headerBackgroundButton.setOnLongClickListener(view -> {
             NavigationHelper.enqueueOnBackgroundPlayer(activity, getPlayQueue(), true);

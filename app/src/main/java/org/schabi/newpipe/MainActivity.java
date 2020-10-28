@@ -23,7 +23,10 @@ package org.schabi.newpipe;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -120,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean servicesShown = false;
     private ImageView serviceArrow;
+
+    private BroadcastReceiver broadcastReceiver;
 
     private static final int ITEM_ID_SUBSCRIPTIONS = -1;
     private static final int ITEM_ID_FEED = -2;
@@ -300,8 +305,8 @@ public class MainActivity extends AppCompatActivity {
         if (DeviceUtils.isTv(this)) {
             FocusOverlayView.setupFocusObserver(this);
         }
-
         initSkyPlayer();
+        setupBroadcastReceiver();
     }
 
     private void setupDrawer() throws Exception {
@@ -587,9 +592,11 @@ public class MainActivity extends AppCompatActivity {
         if (!isChangingConfigurations()) {
             StateSaver.clearStateFiles();
         }
-
         if (adView != null) {
             adView.destroy();
+        }
+        if (broadcastReceiver != null) {
+            unregisterReceiver(broadcastReceiver);
         }
     }
 
@@ -925,9 +932,36 @@ public class MainActivity extends AppCompatActivity {
             ErrorActivity.reportUiError(this, e);
         }
     }
-    /*
-     * Utils
-     * */
+
+    private void setupBroadcastReceiver() {
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(final Context context, final Intent intent) {
+                if (intent.getAction().equals(VideoDetailFragment.ACTION_PLAYER_STARTED)) {
+                    final Fragment fragmentPlayer = getSupportFragmentManager()
+                            .findFragmentById(R.id.fragment_player_holder);
+                    if (fragmentPlayer == null) {
+                        /*
+                         * We still don't have a fragment attached to the activity.
+                         * It can happen when a user started popup or background players
+                         * without opening a stream inside the fragment.
+                         * Adding it in a collapsed state (only mini player will be visible)
+                         * */
+                        NavigationHelper.showMiniPlayer(getSupportFragmentManager());
+                    }
+                    /*
+                    * At this point the player is added 100%, we can unregister.
+                    * Other actions are useless since the fragment will not be removed after that
+                     * */
+                    unregisterReceiver(broadcastReceiver);
+                    broadcastReceiver = null;
+                }
+            }
+        };
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(VideoDetailFragment.ACTION_PLAYER_STARTED);
+        registerReceiver(broadcastReceiver, intentFilter);
+    }
 
     private boolean bottomSheetHiddenOrCollapsed() {
         final FrameLayout bottomSheetLayout = findViewById(R.id.fragment_player_holder);
